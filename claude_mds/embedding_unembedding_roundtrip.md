@@ -36,6 +36,11 @@ No statistics/analysis per user instruction — deliverables are the raw outputs
   gpt2 rerun locally; 72B resubmitted (job 2655457); the 9 still-pending jobs pick v3 up
   automatically since SLURM reads the script at start.
 
+- **2026-07-05 (dense tail)**: the 72B rank trajectory shoots up only at the very end, so
+  probe sampling now includes every other layer over the last ten for deep models
+  (72B: adds L73,75,77; pending 7B-class jobs inherit e.g. L23–31 odd). 72B resubmitted again
+  — its v3 run had completed (6m35s, weights cached) just before the sampling change.
+
 ## Method (v2)
 
 `experiments/roundtrip.py`, submitted per-model by `experiments/submit_all.sh` (CPU-only jobs;

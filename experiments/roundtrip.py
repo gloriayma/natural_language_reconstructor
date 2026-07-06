@@ -55,12 +55,15 @@ def find_layer_list(model):
 
 
 def pick_probe_layers(n_layers, max_probes=12):
-    """1-indexed decoder layers to unembed at. Always 1, 2, penultimate, final."""
+    """1-indexed decoder layers to unembed at. Always 1, 2, penultimate, final;
+    for deep models also every other layer over the last ten — the rank
+    trajectory moves fastest near the end (user request 2026-07-05)."""
     if n_layers <= max_probes:
         return list(range(1, n_layers + 1))
     idxs = {1, 2, n_layers - 1, n_layers}
     for i in range(1, max_probes - 3):
         idxs.add(max(1, round(i * n_layers / (max_probes - 3))))
+    idxs.update(range(max(1, n_layers - 9), n_layers + 1, 2))
     return sorted(idxs)
 
 
