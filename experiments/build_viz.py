@@ -249,9 +249,9 @@ footer{max-width:1120px;margin:0 auto;padding:1rem 2rem 3rem;color:var(--muted);
   <!-- EDIT ME: this is the page blurb. plain HTML; edit freely, then rerun:
        python experiments/build_viz.py  (regenerates viz/roundtrip.html) -->
   <p class="blurb">if you embed a token and immediately unembed it, do you get the token back? the answer is yes in "tied" models such as GPT-2, but no in "untied" models (Qwen2.5-72B).
-     what happens between the embedding and unembedding layer - do the activations live in the same space? the model&rsquo;s unembedding head is
-     applied to the residual stream at every depth: the raw embedding, a sample of
-     intermediate layers, and the final layer. words go in fresh (no context) - of note are multi-token words; check out "antidisestablishmentarianism".</p>
+     what happens between the embedding and unembedding layer - do the activations live in the same space? 
+     
+     words go in fresh (no context); check out "antidisestablishmentarianism".</p>
   <details>
     <summary>how to read this page</summary>
     <ul>
