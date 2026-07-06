@@ -245,7 +245,7 @@ footer{max-width:1120px;margin:0 auto;padding:1rem 2rem 3rem;color:var(--muted);
 </style>
 
 <header>
-  <h1>what does the unembedding layer do on intermediate activations?</h1>
+  <h1>what does the unembedding layer do to intermediate activations?</h1>
   <!-- EDIT ME: this is the page blurb. plain HTML; edit freely, then rerun:
        python experiments/build_viz.py  (regenerates viz/roundtrip.html) -->
   <p class="blurb">if you embed a token and immediately unembed it, do you get the token back? the answer is yes in "tied" models such as GPT-2, but no in "untied" models (Qwen2.5-72B).
