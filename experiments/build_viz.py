@@ -207,7 +207,12 @@ button:focus-visible{outline:2px solid var(--line-strong);outline-offset:1px}
 .plabel .node{width:9px;height:9px;border-radius:50%;background:var(--accent);flex:none;margin-top:5px}
 .plabel.minor .node{background:var(--line)}
 .plabel .nm{white-space:nowrap}
-.chips{display:flex;flex-wrap:nowrap;gap:.45rem;min-width:0;overflow-x:auto;padding-bottom:2px}
+.chips{display:flex;flex-wrap:nowrap;gap:.45rem;min-width:0;overflow-x:auto;
+  padding-bottom:.4rem;scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+.chips::-webkit-scrollbar{height:5px}
+.chips::-webkit-scrollbar-track{background:transparent}
+.chips::-webkit-scrollbar-thumb{background:var(--line);border-radius:999px}
+.chips::-webkit-scrollbar-thumb:hover{background:var(--line-strong)}
 .chip{border:2px solid transparent;border-radius:8px;padding:.1rem .5rem .15rem;cursor:default;
   background:color-mix(in oklab,var(--accent) calc(var(--p)*1%),var(--bg));
   display:inline-flex;align-items:baseline;gap:.4rem;flex:none}
@@ -414,7 +419,7 @@ function render(){
         if(j-i+1>=4){
           addRow(items[i],"out");
           const fold=document.createElement("button");fold.className="fold";
-          fold.innerHTML=`⋯&ensp;${j-i-1} quiet layers (${items[i+1].label}–${items[j-1].label}) — top-1 and ranks barely move &middot; <span class="ex">expand</span>`;
+          fold.innerHTML=`⋯&ensp;${j-i-1} quiet layers (${items[i+1].label}–${items[j-1].label}) — top-1 and ranks barely move — like they kinda look way too similar - not sure why &middot; <span class="ex">expand</span>`;
           fold.onclick=()=>{S.showQuiet=true;render();};
           rows.appendChild(fold);
           addRow(items[j],"in");
