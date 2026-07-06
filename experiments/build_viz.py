@@ -208,7 +208,7 @@ button:focus-visible{outline:2px solid var(--line-strong);outline-offset:1px}
 .plabel.minor .node{background:var(--line)}
 .plabel .nm{white-space:nowrap}
 .chips{display:flex;flex-wrap:nowrap;gap:.45rem;min-width:0;overflow-x:auto;
-  padding-bottom:.4rem;scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+  padding-bottom:.75rem;scrollbar-width:thin;scrollbar-color:var(--line) transparent}
 .chips::-webkit-scrollbar{height:5px}
 .chips::-webkit-scrollbar-track{background:transparent}
 .chips::-webkit-scrollbar-thumb{background:var(--line);border-radius:999px}
