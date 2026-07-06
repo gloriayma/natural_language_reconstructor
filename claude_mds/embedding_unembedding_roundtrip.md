@@ -41,6 +41,13 @@ No statistics/analysis per user instruction — deliverables are the raw outputs
   (72B: adds L73,75,77; pending 7B-class jobs inherit e.g. L23–31 odd). 72B resubmitted again
   — its v3 run had completed (6m35s, weights cached) just before the sampling change.
 
+- **2026-07-05 (viz polish)**: per user — new title ("what does the unembedding layer do, on
+  intermediate activations?"), blurb now states the 0_plan motivation, expanded "how to read"
+  notes, top-5 one-line chips, sparser spacing, and quiet layer stretches (same top-1, self &
+  final-top-1 ranks moving < half an order of magnitude vs the previous row) fold into a
+  fade-out ⋯ fade-in row that expands on click. Verified on data: 72B folds L9–L77 (the
+  attractor plateau), gpt2 folds L4–L11.
+
 ## Method (v2)
 
 `experiments/roundtrip.py`, submitted per-model by `experiments/submit_all.sh` (CPU-only jobs;

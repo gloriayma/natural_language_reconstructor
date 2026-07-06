@@ -3,16 +3,17 @@
 Build viz/roundtrip.html — a self-contained interactive explorer for the
 embed->unembed round-trip results.
 
-Reads every results/<model>/ dir that has meta.json + results.json (script v2),
-packs a compact form of the data (token spellings + logprobs + ranks), gzips it,
-base64s it, and injects it into the HTML template below. Decoded token strings
-are reconstructed client-side (byte-level-BPE inverse map / SentencePiece rule),
-which keeps the payload roughly half the size.
+Reads every results/<model>/ dir that has meta.json + results.json (script v2
+or v3), packs a compact form of the data (token spellings + logprobs + ranks),
+gzips it, base64s it, and injects it into the HTML template below. Decoded
+token strings are reconstructed client-side (byte-level-BPE inverse map /
+SentencePiece rule), which keeps the payload roughly half the size.
 
 Styling follows gloria.ma (per CLAUDE.md HTML instructions): system-ui, cream
 #fffdf8 ground, warm ink #2d2926, tan borders #ded4c7 @ 8px radius, terracotta
-#9a5b4f as the single accent (here: the probability ramp), small-caps labels,
-italic hints, light-only by design (her site has no dark mode).
+#9a5b4f as the single accent, small-caps labels, italic hints, light-only.
+Quiet stretches of layers (same top-1, ranks moving < half an order of
+magnitude) fold into a fade-out ⋯ fade-in affordance; click expands.
 
 Rerun after more models finish:  python experiments/build_viz.py
 """
@@ -118,7 +119,7 @@ def main():
     print(f"\nwrote {OUT}: {len(html)/1024:.0f} KB ({len(models)} models, payload {len(b64)/1024:.0f} KB b64)")
 
 
-TEMPLATE = r"""<title>round-trip lens</title>
+TEMPLATE = r"""<title>what does the unembedding layer do?</title>
 <style>
 :root{
   --bg:#fffdf8; --ink:#2d2926; --muted:#6f675f; --line:#ded4c7; --line-strong:#b9ab98;
@@ -129,17 +130,23 @@ TEMPLATE = r"""<title>round-trip lens</title>
 body{background:var(--bg);color:var(--ink);margin:0;
   font-family:system-ui,sans-serif;font-size:15px;line-height:1.6}
 .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
-header{max-width:1140px;margin:0 auto;padding:2.5rem 2rem 1.2rem}
-header h1{margin:0;font-size:1.35rem;font-weight:600}
+header{max-width:1120px;margin:0 auto;padding:3.2rem 2rem 1.6rem}
+header h1{margin:0;font-size:1.45rem;font-weight:600;text-wrap:balance;max-width:34ch}
 header h1 .dim{color:var(--accent)}
-header p{margin:.4rem 0 0;color:var(--muted);font-size:.92rem;max-width:66ch}
-.app{max-width:1140px;margin:0 auto;display:grid;grid-template-columns:288px minmax(0,1fr);
-  gap:1rem;align-items:start;padding:0 2rem}
-@media (max-width:880px){.app{grid-template-columns:1fr}}
-.rail{position:sticky;top:1rem;display:flex;flex-direction:column;gap:1rem;padding:.5rem 0}
+header .blurb{margin:.8rem 0 0;color:var(--ink);font-size:.95rem;max-width:72ch}
+header details{margin:.9rem 0 0;max-width:72ch}
+header summary{cursor:pointer;font-variant:small-caps;letter-spacing:.08em;
+  color:var(--muted);font-size:.88rem}
+header details ul{margin:.5rem 0 0;padding-left:1.2rem;color:var(--muted);font-size:.88rem}
+header details li{margin:.25rem 0}
+header details .mono{font-size:.82rem;color:var(--ink)}
+.app{max-width:1120px;margin:0 auto;display:grid;grid-template-columns:280px minmax(0,1fr);
+  gap:2rem;align-items:start;padding:0 2rem}
+@media (max-width:880px){.app{grid-template-columns:1fr;gap:1rem}}
+.rail{position:sticky;top:1.2rem;display:flex;flex-direction:column;gap:1.15rem;padding:.5rem 0}
 @media (max-width:880px){.rail{position:static}}
 .field label{display:block;font-variant:small-caps;letter-spacing:.08em;
-  color:var(--muted);margin-bottom:.3rem}
+  color:var(--muted);margin-bottom:.35rem}
 select{width:100%;padding:.5rem .6rem;border:1px solid var(--line);border-radius:8px;
   background:var(--bg);color:var(--ink);font:inherit;font-size:.92rem}
 select:focus,button:focus-visible{outline:none;border-color:var(--line-strong)}
@@ -161,68 +168,108 @@ button:focus-visible{outline:2px solid var(--line-strong);outline-offset:1px}
 .tiedpill.tied{background:var(--accent-soft);color:var(--accent)}
 .tiedpill.untied{border:1px solid var(--line-strong);color:var(--muted)}
 .legend{font-size:.82rem;color:var(--muted);font-style:italic;display:flex;
-  flex-direction:column;gap:.35rem}
+  flex-direction:column;gap:.4rem}
 .legend .row{display:flex;align-items:center;gap:.5rem}
 .swatch{width:26px;height:15px;border-radius:5px;flex:none;
   background:color-mix(in oklab,var(--accent) 42%,var(--bg))}
 .ringdemo{width:26px;height:15px;border-radius:5px;flex:none;background:var(--bg);
   border:2px solid var(--accent)}
 .ringdemo.dashed{border:2px dashed var(--ink)}
-.stack{padding:.5rem 0 3rem;min-width:0}
-.chartcard{border:1px solid var(--line);border-radius:8px;padding:.8rem 1rem .5rem;margin:0 0 1rem}
+.stack{padding:.5rem 0 4rem;min-width:0}
+.chartcard{border:1px solid var(--line);border-radius:8px;padding:1rem 1.2rem .6rem;margin:0 0 1.6rem}
 .chartcard h2{margin:0;font-variant:small-caps;letter-spacing:.08em;color:var(--muted);
   font-size:.9rem;font-weight:600}
-.chartcard .sub{margin:0 0 .3rem;font-size:.8rem;color:var(--muted);font-style:italic}
+.chartcard .sub{margin:0 0 .4rem;font-size:.8rem;color:var(--muted);font-style:italic}
 .chartcard svg{display:block;width:100%;height:auto}
 .chartlegend{display:flex;gap:1.2rem;font-size:.78rem;color:var(--muted);
-  font-style:italic;padding:.2rem 0 .3rem}
+  font-style:italic;padding:.25rem 0 .35rem}
 .chartlegend .row{display:flex;align-items:center;gap:.45rem}
 .chartlegend .ln{width:26px;height:0;border-top:2px solid var(--accent);flex:none}
 .chartlegend .ln.dashed{border-top:2px dashed var(--ink)}
-.stackhead{font-variant:small-caps;letter-spacing:.08em;color:var(--muted);margin:0 0 .6rem}
+.stackhead{font-variant:small-caps;letter-spacing:.08em;color:var(--muted);margin:0 0 .8rem}
 .stackhead b{color:var(--ink);letter-spacing:0;font-variant:normal;
   font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.95rem}
-.probe{display:grid;grid-template-columns:92px minmax(0,1fr) auto;gap:.9rem;padding:.55rem 0}
-.probe + .probe{border-top:1px dashed var(--line)}
+#rows>*+*{border-top:1px dashed var(--line)}
+.probe{display:grid;grid-template-columns:96px minmax(0,1fr) auto;gap:1rem;padding:.8rem 0}
+.probe.ghost{opacity:.35;cursor:pointer}
+.probe.ghost.out{mask-image:linear-gradient(180deg,#000 25%,transparent);
+  -webkit-mask-image:linear-gradient(180deg,#000 25%,transparent)}
+.probe.ghost.in{mask-image:linear-gradient(0deg,#000 25%,transparent);
+  -webkit-mask-image:linear-gradient(0deg,#000 25%,transparent)}
+.fold{display:block;width:100%;padding:.5rem 0;border:0;background:none;color:var(--muted);
+  font:inherit;font-size:.84rem;font-style:italic;cursor:pointer;text-align:center}
+.fold .ex{color:var(--accent);text-decoration:underline}
+.unfold{display:block;margin:.2rem auto 0;border:0;background:none;color:var(--muted);
+  font:inherit;font-size:.8rem;font-style:italic;cursor:pointer}
+.unfold .ex{color:var(--accent);text-decoration:underline}
 .plabel{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.82rem;
-  color:var(--muted);display:flex;align-items:flex-start;gap:.5rem;padding-top:.35rem}
+  color:var(--muted);display:flex;align-items:flex-start;gap:.5rem;padding-top:.3rem}
 .plabel .node{width:9px;height:9px;border-radius:50%;background:var(--accent);flex:none;margin-top:5px}
 .plabel.minor .node{background:var(--line)}
 .plabel .nm{white-space:nowrap}
-.chips{display:flex;flex-wrap:wrap;gap:.4rem;min-width:0}
-.chip{border:2px solid transparent;border-radius:8px;padding:.15rem .5rem .2rem;cursor:default;
+.chips{display:flex;flex-wrap:nowrap;gap:.45rem;min-width:0;overflow-x:auto;padding-bottom:2px}
+.chip{border:2px solid transparent;border-radius:8px;padding:.1rem .5rem .15rem;cursor:default;
   background:color-mix(in oklab,var(--accent) calc(var(--p)*1%),var(--bg));
-  display:inline-flex;align-items:baseline;gap:.45rem;max-width:100%}
-.chip .tok{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.86rem;
-  white-space:pre;overflow:hidden;text-overflow:ellipsis;max-width:22ch}
-.chip .lp{font-size:.74rem;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+  display:inline-flex;align-items:baseline;gap:.4rem;flex:none}
+.chip .tok{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.84rem;
+  white-space:pre;overflow:hidden;text-overflow:ellipsis;max-width:16ch}
+.chip .lp{font-size:.72rem;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
 .chip.self{border-color:var(--accent)}
 .chip.nexttok{border-style:dashed;border-color:var(--ink)}
-.chip .tag{font-size:.66rem;font-weight:700;letter-spacing:.06em;font-variant:small-caps}
+.chip .tag{font-size:.64rem;font-weight:700;letter-spacing:.06em;font-variant:small-caps}
 .chip.self .tag{color:var(--accent)}
 .chip.nexttok .tag{color:var(--ink)}
-.ranks{display:flex;flex-direction:column;gap:.25rem;align-items:flex-end;padding-top:.2rem}
+.ranks{display:flex;gap:.35rem;align-items:center;padding-top:.15rem}
 .badge{font-size:.78rem;padding:.05rem .55rem;border-radius:999px;
   border:1px solid var(--line);color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
 .badge b{color:var(--ink);font-weight:600}
 .badge.hit{background:var(--accent-soft);border-color:transparent;color:var(--accent)}
 .badge.hit b{color:var(--accent)}
 .note{color:var(--muted);font-size:.9rem;font-style:italic;padding:.5rem 0}
-footer{max-width:1140px;margin:0 auto;padding:1rem 2rem 2.5rem;color:var(--muted);
+footer{max-width:1120px;margin:0 auto;padding:1rem 2rem 3rem;color:var(--muted);
   font-size:.8rem;font-style:italic}
 #tip{position:fixed;z-index:10;pointer-events:none;background:var(--ink);color:var(--bg);
   border-radius:8px;padding:.45rem .65rem;font-size:.8rem;max-width:340px;display:none;line-height:1.5}
 #tip .mono{word-break:break-all}
 #tip .k{opacity:.6}
-@media (prefers-reduced-motion:no-preference){.chip{transition:border-color .12s}}
+@media (prefers-reduced-motion:no-preference){.chip{transition:border-color .12s}.probe.ghost{transition:opacity .15s}}
 </style>
 
 <header>
-  <h1>round-trip <span class="dim">lens</span></h1>
-  <p>pick a model and a word: each row unembeds the residual stream at one probe point,
-     from the raw embedding down to the model&rsquo;s real output. chips are the top-10 tokens
-     (darker&nbsp;=&nbsp;more probable) with log-probs; badges track where the input token itself
-     (&ldquo;self&rdquo;) and the word&rsquo;s true next token (&ldquo;next&rdquo;) rank.</p>
+  <h1>what does the <span class="dim">unembedding layer</span> do, on intermediate activations?</h1>
+  <p class="blurb">if you embed a token and immediately unembed it, do you get the token back?
+     that is: are the embedding and unembedding layers inverses — or do they at least live in
+     the same space, tied together by bigram statistics, or by nothing except the layers in
+     between? here, words go in fresh (no context) and the model&rsquo;s unembedding head is
+     applied to the residual stream at every depth: the raw embedding, a sample of
+     intermediate layers, and the true final output — so you can watch &ldquo;the token
+     itself&rdquo; (or noise) turn into a genuine next-token prediction.</p>
+  <details>
+    <summary>how to read this page</summary>
+    <ul>
+      <li><b>controls</b>: pick a model, a word, and — for multi-token words — which token&rsquo;s
+        trajectory to look at. tied models share one weight matrix between embedding and
+        unembedding; untied models learn them separately.</li>
+      <li><b>unembedding</b>: &ldquo;logit lens&rdquo; applies the model&rsquo;s final norm before the
+        unembedding head (the standard convention); &ldquo;raw&rdquo; applies the bare head. the
+        &ldquo;output&rdquo; row is always the model&rsquo;s own head output, its real prediction.</li>
+      <li><b>token display</b>: &ldquo;raw tokens&rdquo; shows tokenizer-internal spelling
+        (<span class="mono">Ġ</span> = leading space); &ldquo;decoded&rdquo; shows the actual string
+        (<span class="mono">␣</span> = space, <span class="mono">␊</span> = newline).</li>
+      <li><b>each row</b> = one depth. its chips are the 5 most likely tokens if you unembed
+        right there — darker fill = more probable, the small number is the log-probability.
+        a solid ring marks the input token itself; a dashed ring marks the word&rsquo;s actual
+        next token. hover any chip for both spellings and the exact probability.</li>
+      <li><b>badges</b>: <span class="mono">self #N</span> = where the input token ranks in that
+        depth&rsquo;s distribution (#1 = perfect round-trip). <span class="mono">next #N</span> =
+        where the word&rsquo;s true next token ranks.</li>
+      <li><b>chart</b>: the same story across all depths — rank of the input token (solid) and
+        of the model&rsquo;s eventual top-1 prediction (dashed), log scale, rank 1 at the top.</li>
+      <li><b>⋯ folded rows</b>: stretches of layers where nothing moves (same top-1, self and
+        final-top-1 ranks changing by less than half an order of magnitude) are faded out;
+        click to expand them.</li>
+    </ul>
+  </details>
 </header>
 
 <div class="app">
@@ -242,15 +289,14 @@ footer{max-width:1140px;margin:0 auto;padding:1rem 2rem 2.5rem;color:var(--muted
     </div></div>
   <dl class="meta" id="meta"></dl>
   <div class="legend">
-    <div class="row"><span class="swatch"></span> fill intensity &prop; probability</div>
-    <div class="row"><span class="ringdemo"></span> solid ring = the input token itself</div>
-    <div class="row"><span class="ringdemo dashed"></span> dashed ring = word&rsquo;s actual next token</div>
-    <div class="row">&ldquo;output&rdquo; row = model&rsquo;s own head (always its true path)</div>
+    <div class="row"><span class="swatch"></span> darker = more probable</div>
+    <div class="row"><span class="ringdemo"></span> the input token itself</div>
+    <div class="row"><span class="ringdemo dashed"></span> the word&rsquo;s actual next token</div>
   </div>
 </aside>
 <main class="stack">
-  <p class="stackhead" id="stackhead"></p>
   <div id="chart"></div>
+  <p class="stackhead" id="stackhead"></p>
   <div id="rows"></div>
 </main>
 </div>
@@ -260,7 +306,7 @@ footer{max-width:1140px;margin:0 auto;padding:1rem 2rem 2.5rem;color:var(--muted
 <script>
 const PAYLOAD="__PAYLOAD__";
 let DATA=null;
-const S={m:0,w:0,pos:0,variant:"normed",display:"decoded"};
+const S={m:0,w:0,pos:0,variant:"normed",display:"decoded",showQuiet:false};
 
 /* ---------- token decoding (client-side) ---------- */
 const byteOf=(()=>{const m={};const inc=new Set();
@@ -295,6 +341,24 @@ function probeLabel(p){
   if(p==="emb")return"emb";
   if(p==="final_logits")return"output";
   return"L"+p.slice(6);}
+function probeItems(model,tok){
+  const items=[];
+  for(const p of model.probes){
+    const rec=tok.probes[p];if(!rec)continue;
+    const v=p==="final_logits"?rec.raw:(rec[S.variant]||rec.raw);if(!v)continue;
+    items.push({p,label:probeLabel(p),v,major:p==="emb"||p==="final_logits"});}
+  return items;}
+function quietMask(items){
+  // sameish[i]: row i shows nothing new vs row i-1 (verified from the data)
+  const ld=(x,y)=>Math.abs(Math.log10(x/y));
+  return items.map((it,i)=>{
+    if(i===0)return false;
+    if(it.p==="final_logits"||items[i-1].p==="final_logits")return false;
+    const a=items[i-1].v,b=it.v;
+    if(a.top[0][0]!==b.top[0][0])return false;
+    if(ld(a.self,b.self)>=0.5)return false;
+    if(a.f1!=null&&b.f1!=null&&ld(a.f1,b.f1)>=0.5)return false;
+    return true;});}
 function render(){
   const model=DATA.models[S.m],word=model.words[S.w];
   $("meta").innerHTML=
@@ -304,21 +368,21 @@ function render(){
   const pt=$("ptabs");pt.innerHTML="";
   word.toks.forEach((t,i)=>{const b=document.createElement("button");
     b.textContent=disp(model,t.t);b.setAttribute("aria-pressed",String(i===S.pos));
-    b.onclick=()=>{S.pos=i;render();};pt.appendChild(b);});
+    b.onclick=()=>{S.pos=i;S.showQuiet=false;render();};pt.appendChild(b);});
   if(word.note){$("rows").innerHTML=`<p class="note">“${word.w}” ${word.note} in this tokenizer.</p>`;
     $("stackhead").textContent="";$("chart").innerHTML="";return;}
   const tok=word.toks[S.pos],nextTok=word.toks[S.pos+1]?.t??null;
   $("stackhead").innerHTML=`trajectory for token <b>${escapeHtml(disp(model,tok.t))}</b>`+
     ` (${S.pos+1} of ${word.toks.length}${nextTok?`, true next: <b>${escapeHtml(disp(model,nextTok))}</b>`:""})`;
+  const items=probeItems(model,tok);
   const rows=$("rows");rows.innerHTML="";
-  for(const p of model.probes){
-    const rec=tok.probes[p];if(!rec)continue;
-    const v=p==="final_logits"?rec.raw:(rec[S.variant]||rec.raw);if(!v)continue;
-    const row=document.createElement("div");row.className="probe";
-    const major=p==="emb"||p==="final_logits";
-    row.innerHTML=`<div class="plabel${major?"":" minor"}"><span class="node"></span><span class="nm">${probeLabel(p)}</span></div>`;
+  const addRow=(it,ghost)=>{
+    const row=document.createElement("div");
+    row.className="probe"+(ghost?` ghost ${ghost}`:"");
+    if(ghost){row.title="expand quiet layers";row.onclick=()=>{S.showQuiet=true;render();};}
+    row.innerHTML=`<div class="plabel${it.major?"":" minor"}"><span class="node"></span><span class="nm">${it.label}</span></div>`;
     const chips=document.createElement("div");chips.className="chips";
-    v.top.forEach(([t,lp],k)=>{
+    it.v.top.slice(0,5).forEach(([t,lp],k)=>{
       const c=document.createElement("button");c.className="chip";
       const prob=Math.exp(lp),pmax=getComputedStyle(document.documentElement).getPropertyValue("--chipmax");
       c.style.setProperty("--p",String(Math.max(5,Math.min(+pmax,+pmax*Math.sqrt(prob)))));
@@ -332,11 +396,36 @@ function render(){
       chips.appendChild(c);});
     row.appendChild(chips);
     const ranks=document.createElement("div");ranks.className="ranks";
-    ranks.innerHTML=`<span class="badge${v.self===1?" hit":""}">self <b>#${fmt(v.self)}</b></span>`+
-      (v.next!=null?`<span class="badge${v.next===1?" hit":""}">next <b>#${fmt(v.next)}</b></span>`:"");
-    row.appendChild(ranks);rows.appendChild(row);}
+    ranks.innerHTML=`<span class="badge${it.v.self===1?" hit":""}">self <b>#${fmt(it.v.self)}</b></span>`+
+      (it.v.next!=null?`<span class="badge${it.v.next===1?" hit":""}">next <b>#${fmt(it.v.next)}</b></span>`:"");
+    row.appendChild(ranks);rows.appendChild(row);};
+  if(S.showQuiet){
+    for(const it of items)addRow(it);
+    const un=document.createElement("button");un.className="unfold";
+    un.innerHTML=`<span class="ex">fold quiet layers back up</span>`;
+    un.onclick=()=>{S.showQuiet=false;render();};
+    rows.appendChild(un);
+  }else{
+    const sameish=quietMask(items);
+    let i=0;
+    while(i<items.length){
+      if(sameish[i]){
+        let j=i;while(j+1<items.length&&sameish[j+1])j++;
+        if(j-i+1>=4){
+          addRow(items[i],"out");
+          const fold=document.createElement("button");fold.className="fold";
+          fold.innerHTML=`⋯&ensp;${j-i-1} quiet layers (${items[i+1].label}–${items[j-1].label}) — top-1 and ranks barely move &middot; <span class="ex">expand</span>`;
+          fold.onclick=()=>{S.showQuiet=true;render();};
+          rows.appendChild(fold);
+          addRow(items[j],"in");
+          i=j+1;continue;}
+        for(let k=i;k<=j;k++)addRow(items[k]);
+        i=j+1;continue;}
+      addRow(items[i]);i++;}
+  }
   renderChart(model,tok);
 }
+function escapeHtml(s){return s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
 /* ---------- rank-trajectory chart ---------- */
 function gridLabel(d){return d<3?String(10**d):d<6?(10**(d-3))+"k":(10**(d-6))+"M";}
 function renderChart(model,tok){
@@ -349,7 +438,7 @@ function renderChart(model,tok){
       label:probeLabel(p),self:v.self,f1:v.f1});}
   if(pts.length<2){host.innerHTML="";return;}
   const hasF1=pts.some(q=>q.f1!=null);
-  const W=760,H=240,L=46,R=86,T=14,B=32,pw=W-L-R,ph=H-T-B;
+  const W=760,H=250,L=46,R=86,T=16,B=34,pw=W-L-R,ph=H-T-B;
   const dec=Math.max(1,Math.ceil(Math.log10(model.vocab)));
   const xmax=model.layers+1;
   const px=x=>L+x/xmax*pw, py=r=>T+Math.log10(Math.max(1,r))/dec*ph;
@@ -357,9 +446,11 @@ function renderChart(model,tok){
   for(let d=0;d<=dec;d++){const y=T+d/dec*ph;
     g+=`<line x1="${L}" y1="${y}" x2="${W-R}" y2="${y}" style="stroke:var(--line)" stroke-width="1"/>`+
        `<text x="${L-7}" y="${y+3.5}" text-anchor="end" font-size="10.5" style="fill:var(--muted)">${gridLabel(d)}</text>`;}
-  for(const q of pts)
-    g+=`<text x="${px(q.x)}" y="${H-B+16}" text-anchor="middle" font-size="10" style="fill:var(--muted)">${q.label==="output"?"out":q.label.replace("L","")}</text>`;
-  g+=`<text x="${L-7}" y="${T-4}" text-anchor="end" font-size="9.5" font-style="italic" style="fill:var(--muted)">rank</text>`;
+  let lastTickX=-99;
+  for(const q of pts){const tx=px(q.x);
+    if(tx-lastTickX<20)continue;lastTickX=tx;
+    g+=`<text x="${tx}" y="${H-B+16}" text-anchor="middle" font-size="10" style="fill:var(--muted)">${q.label==="output"?"out":q.label.replace("L","")}</text>`;}
+  g+=`<text x="${L-7}" y="${T-5}" text-anchor="end" font-size="9.5" font-style="italic" style="fill:var(--muted)">rank</text>`;
   const series=[["self","var(--accent)","",q=>q.self]];
   if(hasF1)series.push(["final top-1","var(--ink)","5 4",q=>q.f1]);
   let marks="";
@@ -386,7 +477,6 @@ function renderChart(model,tok){
     c.addEventListener("pointerenter",show);c.addEventListener("pointermove",place);
     c.addEventListener("pointerleave",hideTip);});
 }
-function escapeHtml(s){return s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
 /* ---------- tooltip ---------- */
 function tip(e,model,t,lp,k){const el=$("tip");
   const dec=model.style==="sp"?decodeSP(t):decodeBPE(t);
@@ -405,7 +495,7 @@ function initControls(){
   const ms=$("msel");
   DATA.models.forEach((m,i)=>{const o=document.createElement("option");
     o.value=i;o.textContent=`${m.name}  (${m.tied?"tied":"untied"}, ${m.layers}L)`;ms.appendChild(o);});
-  ms.onchange=()=>{S.m=+ms.value;S.w=Math.min(S.w,DATA.models[S.m].words.length-1);S.pos=0;fillWords();render();};
+  ms.onchange=()=>{S.m=+ms.value;S.w=Math.min(S.w,DATA.models[S.m].words.length-1);S.pos=0;S.showQuiet=false;fillWords();render();};
   function fillWords(){
     const ws=$("wsel");ws.innerHTML="";let g=null,cat=null;
     DATA.models[S.m].words.forEach((w,i)=>{
@@ -414,11 +504,12 @@ function initControls(){
       const o=document.createElement("option");o.value=i;
       o.textContent=JSON.stringify(w.w).slice(1,-1)||w.w;g.appendChild(o);});
     ws.value=S.w;
-    ws.onchange=()=>{S.w=+ws.value;S.pos=0;render();};}
+    ws.onchange=()=>{S.w=+ws.value;S.pos=0;S.showQuiet=false;render();};}
   fillWords();
   for(const[segId,key]of[["vseg","variant"],["dseg","display"]])
     $(segId).querySelectorAll("button").forEach(b=>b.onclick=()=>{
       S[key]=b.dataset.v||b.dataset.d;
+      if(key==="variant")S.showQuiet=false;
       $(segId).querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",String(x===b)));
       render();});
 }
