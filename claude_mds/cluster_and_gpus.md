@@ -57,6 +57,9 @@ History at the bottom.
    - Also valid (what `experiments/submit_all.sh` does): skip activation entirely and call
      `~/miniconda/envs/<env>/bin/python` by absolute path.
 3. Only ~16GB RAM in the dev shell: models above ~2B (fp32) must go through sbatch.
+4. **Setting `HF_HOME` orphans your HF token**: huggingface_hub then looks for it at
+   `$HF_HOME/token`, not `~/.cache/huggingface/token` — gated downloads fail with 401 inside
+   jobs even though the token works interactively. Fix: `cp ~/.cache/huggingface/token $HF_HOME/token`.
 
 ## Storage & env
 
