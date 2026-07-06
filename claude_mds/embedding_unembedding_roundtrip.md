@@ -114,6 +114,13 @@ The noise→next-token transition is visible: the word's true next token climbs 
 `ocurrency` close behind). Layer-80 normed probe matches `final_logits` up to bf16/fp32
 numeric drift, revalidating the pipeline on an 80-layer model.
 
+### Qwen/Qwen2.5-72B dense-tail rerun (v3) — 2026-07-05, job 2655461, 7m04s
+
+With probes at L71,73,75,77,79,80: for `crypt` (of cryptocurrency), the model's eventual
+top-1 token `os` sits near the BOTTOM of the vocab (rank ~149k of 152k) through L77, then
+rank 3 at L79 and rank 1 at L80 — the output prediction crystallizes almost entirely in the
+last two layers, visible in the viz's rank-trajectory chart.
+
 ### v1 archive (embed→unembed only, superseded)
 
 `results_v1_embed_only/`: gpt2 — perfect round-trip at rank 1 everywhere; Qwen2.5-72B

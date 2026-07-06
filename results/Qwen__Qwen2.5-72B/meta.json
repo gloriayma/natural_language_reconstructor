@@ -1,6 +1,6 @@
 {
   "model": "Qwen/Qwen2.5-72B",
-  "script_version": 2,
+  "script_version": 3,
   "dtype": "bfloat16",
   "vocab_size_config": 152064,
   "vocab_size_tokenizer": 151665,
@@ -17,6 +17,9 @@
     53,
     62,
     71,
+    73,
+    75,
+    77,
     79,
     80
   ],
