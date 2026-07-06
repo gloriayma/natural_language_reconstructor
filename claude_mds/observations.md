@@ -5,15 +5,20 @@ the explorer (https://claude.ai/code/artifact/9663731e-8a84-462e-9d85-a80778103d
 gloria.ma/roundtrip.html) or in `results/<model>/results.{json,csv}`. Numbers below use the
 **normed** (logit-lens) variant unless noted.
 
-**Data basis so far: 2 models** — gpt2 (tied, 12L) and Qwen2.5-72B (untied, 80L). 9 more are
-queued; observations may sharpen or break as they land. n = 143 (gpt2) / 142 (72B) token rows.
+**Data basis: 11 models** (fleet completed 2026-07-06) — 4 tied (gpt2, gpt2-xl, Qwen2.5-0.5B,
+gemma-2-2b), 7 untied (pythia-410m/6.9b, Mistral-7B, OLMo-2-7B, gpt-oss-20b, Qwen2.5-7B/72B).
+~140–153 token rows per model. Full panel table in the experiment doc. Items written from the
+first 2 models and later revised are marked.
 
 ## 1. The headline: tied round-trips, untied doesn't — at all
 
-- **gpt2 (tied)**: 95.8% of tokens come back as the top-1 at the embedding probe (98.6% raw).
-  Median self-rank 1.
-- **Qwen2.5-72B (untied)**: **0.0%** come back. Median self-rank ≈ **68,000 of 152k** — i.e.
-  the input token sits at an essentially random position in the unembedded distribution.
+Across the full panel the split is **perfect**: every tied model round-trips (gpt2 95.8%,
+gpt2-xl 98.6%, Qwen2.5-0.5B 99.3%, gemma-2-2b 96.2% — the last at a 256k vocab), and every
+untied model doesn't (six at exactly 0.0%; Mistral at 0.7% = one surviving word, `▁between`).
+Untied medians sit between the 27th and 69th percentile of their vocabs — around random, with
+the extreme cases at the literal bottom (obs. 2). And it's tying, not scale: pythia-410m
+(untied, 0.4B) fails identically to Qwen2.5-72B; the tied/untied Qwen siblings (0.5B vs 7B)
+share a tokenizer and split cleanly.
 
 So "is the embedding the inverse of the unembedding?" — yes-ish when weights are tied (trivially),
 and *not even approximately* when untied.
@@ -38,11 +43,13 @@ path apparently stops carrying next-token structure entirely (the layers do all 
 
 Mid-network, the logit lens shows one token dominating top-1 across most inputs:
 
-- gpt2 at L6: `,` is top-1 for **71/143** rows (runner-up: `Ġthe`, 23) — it rests on
-  high-frequency English glue.
-- Qwen2.5-72B at L53: a **Thai token** (สามาร, fragment of "can/able") is top-1 for **89/142**
-  rows; the runners-up are CJK tokens. The resting state of a 152k-vocab multilingual model is
-  apparently an exotic high-norm token, not English glue.
+- gpt2 at L6: `,` is top-1 for **71/143** rows; gpt2-xl rests on `Ġand` (78/143).
+- Qwen2.5-72B at L53: a **Thai token** (สามาร) for **89/142** rows.
+- **Revised with the full panel**: most models rest on *weird rare tokens*, not glue —
+  `ascus` (Qwen-0.5B), `enumi` (gemma — LaTeX!), `Ġbast` (pythia-410m), `Ġstrugg` (Qwen-7B),
+  `contador` (OLMo), `▁kennis` (Mistral — Dutch!), `ĠBOTH` (gpt-oss), `Ċ` (pythia-6.9b).
+  The GPT-2 family's English-glue resting state is the exception, not the rule (and note it
+  holds tied or not — gemma is tied and still rests on a LaTeX fragment).
 
 Caveat: mid-network residuals aren't in the output basis (this is the known logit-lens
 weakness the tuned-lens literature addresses), so "attractor" describes the lens view, not
@@ -57,10 +64,15 @@ First probe at which the model's eventual top-1 token enters the lens top-10:
   layers, and before that it can be *anti*-ranked: for `crypt`, the eventual top-1 `os` sits
   around rank **149,000** through L77, then rank 3 at L79 and rank 1 at L80.
 
-Same lens, opposite behavior: the small tied model's direct/early path already contains its
-prediction; the big untied model actively holds its answer far away until the very end.
-(Whether this is size, tying, or training-era is exactly what the pending mid-size models
-should split apart.)
+**Revised with the full panel — this is NOT a tied/untied or size split.** Median
+depth-fraction at which the final top-1 enters the lens top-10: gpt2 8%, gpt2-xl 23%,
+pythia-6.9b 22% vs pythia-410m 96%, Qwen-0.5B 96%, Mistral 91%, gpt-oss 88%, OLMo/Qwen-7B
+100%, Qwen-72B 99% — and gemma-2-2b at 0%. Two confounds explain most of it:
+(a) models whose real answer to a bare word is generic glue (gpt2 `,`, gpt2-xl, pythia-6.9b
+`-`/`,`/`.`) look "early" because their answer coincides with their lens resting state;
+(b) gemma looks "instant" because its real answer *is the input token* 58% of the time
+(obs. 9), which a tied model shows at the embedding. Models with diverse final answers
+crystallize at 88–100% of depth regardless of size or tying.
 
 ## 6. Which tokens fail the round-trip in the tied model: whitespace & control
 
@@ -108,6 +120,15 @@ Measured directly from the weights (rows of `lm_head.weight` / gpt2's tied `wte`
   norm range is 2.6×). Mid-network, no token has a large cosine to the residual, so ranking
   degenerates to ~pure norm order — the attractor regime is this argument taken to its limit.
 
+## 9. gemma-2-2b echoes: its true output for a bare word is often the word itself
+
+For 76/131 token rows (58%), gemma-2-2b's actual model output (final_logits top-1) is the
+input token again — given `dog` with no context it predicts ` dog`-ish continuations of
+itself. No other model in the panel does this (gpt2 1/143, pythia-6.9b 2/145, Qwen-0.5B
+5/142 — those predict punctuation/glue instead: gpt2's modal answer is `,` 40/143, Qwen-0.5B's
+is `Ġ=` 18/142). Combined with tying, gemma's echo makes its "crystallization depth" 0% — the
+answer is visible at the embedding because the answer is the question.
+
 ## Caveats
 
 Two models; one run (deterministic); ~12–17 probe layers not all layers; bare-word
@@ -122,3 +143,7 @@ compared against (obs. 3 is eyeball-level).
 - **2026-07-05 (later still)**: Added the capture condition to obs. 8 after the user pointed
   out high-norm rows should capture more round-trips — confirmed in weights (tab/NUL captured
   by the same three high-norm anomalous rows).
+- **2026-07-06**: Fleet complete (11 models). Obs. 1 upgraded to the full-panel perfect split;
+  obs. 4 revised (attractors are usually weird rare tokens; GPT-2-family glue is the
+  exception); obs. 5 revised (crystallization is not a tied/size split — glue-answer and echo
+  confounds); obs. 9 added (gemma echoes bare words 58% of the time).

@@ -1,0 +1,97 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Error while downloading from https://huggingface.co/api/resolve-cache/models/EleutherAI/pythia-6.9b/c0e3eee36dc47af0c49f361c74cfe459c09f7f23/tokenizer.json: The read operation timed out
+Trying to resume download...
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Fetching 2 files:   0%|          | 0/2 [00:00<?, ?it/s]Fetching 2 files:  50%|█████     | 1/2 [00:22<00:22, 22.86s/it]Fetching 2 files: 100%|██████████| 2/2 [00:23<00:00,  9.70s/it]Fetching 2 files: 100%|██████████| 2/2 [00:23<00:00, 11.68s/it]
+Loading weights:   0%|          | 0/388 [00:00<?, ?it/s]Loading weights:   0%|          | 1/388 [00:00<00:41,  9.32it/s]Loading weights:   5%|▌         | 20/388 [00:00<00:04, 83.18it/s]Loading weights:   7%|▋         | 29/388 [00:00<00:04, 82.86it/s]Loading weights:  10%|▉         | 37/388 [00:00<00:04, 73.64it/s]Loading weights:  12%|█▏        | 45/388 [00:00<00:04, 70.46it/s]Loading weights:  13%|█▎        | 52/388 [00:00<00:05, 65.97it/s]Loading weights:  15%|█▌        | 60/388 [00:00<00:05, 62.88it/s]Loading weights:  18%|█▊        | 68/388 [00:01<00:05, 60.82it/s]Loading weights:  20%|██        | 78/388 [00:01<00:04, 66.74it/s]Loading weights:  22%|██▏       | 86/388 [00:01<00:04, 65.05it/s]Loading weights:  24%|██▍       | 95/388 [00:01<00:04, 65.81it/s]Loading weights:  28%|██▊       | 107/388 [00:01<00:04, 66.93it/s]Loading weights:  30%|██▉       | 116/388 [00:01<00:04, 61.45it/s]Loading weights:  32%|███▏      | 126/388 [00:01<00:04, 63.56it/s]Loading weights:  36%|███▌      | 140/388 [00:02<00:04, 57.85it/s]Loading weights:  40%|████      | 156/388 [00:02<00:03, 66.58it/s]Loading weights:  43%|████▎     | 168/388 [00:02<00:03, 66.38it/s]Loading weights:  46%|████▋     | 180/388 [00:02<00:03, 67.55it/s]Loading weights:  49%|████▉     | 192/388 [00:02<00:02, 71.45it/s]Loading weights:  52%|█████▏    | 200/388 [00:03<00:02, 63.44it/s]Loading weights:  55%|█████▍    | 212/388 [00:03<00:02, 74.71it/s]Loading weights:  57%|█████▋    | 221/388 [00:03<00:02, 63.17it/s]Loading weights:  59%|█████▉    | 230/388 [00:03<00:02, 65.98it/s]Loading weights:  62%|██████▏   | 240/388 [00:03<00:02, 64.53it/s]Loading weights:  64%|██████▍   | 248/388 [00:03<00:02, 67.83it/s]Loading weights:  68%|██████▊   | 263/388 [00:03<00:01, 86.60it/s]Loading weights:  70%|███████   | 273/388 [00:04<00:01, 68.36it/s]Loading weights:  72%|███████▏  | 281/388 [00:04<00:01, 58.72it/s]Loading weights:  75%|███████▍  | 290/388 [00:04<00:01, 62.95it/s]Loading weights:  77%|███████▋  | 300/388 [00:04<00:01, 68.34it/s]Loading weights:  79%|███████▉  | 308/388 [00:04<00:01, 68.89it/s]Loading weights:  82%|████████▏ | 320/388 [00:04<00:01, 64.15it/s]Loading weights:  86%|████████▌ | 332/388 [00:04<00:00, 75.65it/s]Loading weights:  88%|████████▊ | 341/388 [00:05<00:00, 69.69it/s]Loading weights:  90%|████████▉ | 349/388 [00:05<00:00, 68.83it/s]Loading weights:  92%|█████████▏| 357/388 [00:05<00:00, 63.13it/s]Loading weights:  94%|█████████▍| 364/388 [00:05<00:00, 60.39it/s]Loading weights:  96%|█████████▋| 374/388 [00:05<00:00, 57.08it/s]Loading weights:  99%|█████████▉| 386/388 [00:05<00:00, 66.01it/s]Loading weights: 100%|██████████| 388/388 [00:05<00:00, 66.63it/s]
+done: common_noun            'dog' -> 1 token(s)
+done: common_noun            'table' -> 1 token(s)
+done: common_noun            'water' -> 1 token(s)
+done: common_noun            'music' -> 1 token(s)
+done: common_noun            'idea' -> 1 token(s)
+done: common_noun            'house' -> 1 token(s)
+done: common_noun            'science' -> 1 token(s)
+done: common_noun            'coffee' -> 2 token(s)
+done: proper_noun            'London' -> 1 token(s)
+done: proper_noun            'Einstein' -> 1 token(s)
+done: proper_noun            'Google' -> 1 token(s)
+done: proper_noun            'Tokyo' -> 2 token(s)
+done: proper_noun            'Shakespeare' -> 2 token(s)
+done: proper_noun            'Beyoncé' -> 3 token(s)
+done: verb                   'run' -> 1 token(s)
+done: verb                   'walked' -> 2 token(s)
+done: verb                   'is' -> 1 token(s)
+done: verb                   'think' -> 1 token(s)
+done: verb                   'understand' -> 1 token(s)
+done: verb                   'procrastinate' -> 4 token(s)
+done: preposition            'of' -> 1 token(s)
+done: preposition            'in' -> 1 token(s)
+done: preposition            'under' -> 1 token(s)
+done: preposition            'between' -> 1 token(s)
+done: preposition            'through' -> 1 token(s)
+done: preposition            'despite' -> 2 token(s)
+done: adjective              'big' -> 1 token(s)
+done: adjective              'happy' -> 1 token(s)
+done: adjective              'enormous' -> 3 token(s)
+done: adjective              'purple' -> 2 token(s)
+done: adjective              'incomprehensible' -> 4 token(s)
+done: adverb                 'quickly' -> 2 token(s)
+done: adverb                 'very' -> 1 token(s)
+done: adverb                 'often' -> 1 token(s)
+done: pronoun                'she' -> 1 token(s)
+done: pronoun                'they' -> 1 token(s)
+done: pronoun                'ourselves' -> 2 token(s)
+done: determiner             'the' -> 1 token(s)
+done: determiner             'an' -> 1 token(s)
+done: determiner             'this' -> 1 token(s)
+done: conjunction            'and' -> 1 token(s)
+done: conjunction            'but' -> 1 token(s)
+done: conjunction            'although' -> 1 token(s)
+done: interjection           'hello' -> 1 token(s)
+done: interjection           'wow' -> 2 token(s)
+done: interjection           'hmm' -> 1 token(s)
+done: number                 'seven' -> 1 token(s)
+done: number                 '42' -> 1 token(s)
+done: number                 '3.14' -> 3 token(s)
+done: multi_token_by_design  'serendipity' -> 4 token(s)
+done: multi_token_by_design  'antidisestablishmentarianism' -> 6 token(s)
+done: multi_token_by_design  'cryptocurrency' -> 3 token(s)
+done: multi_token_by_design  'unbelievable' -> 3 token(s)
+done: multi_token_by_design  'biotechnology' -> 2 token(s)
+done: punctuation            '.' -> 1 token(s)
+done: punctuation            ',' -> 1 token(s)
+done: punctuation            '!' -> 1 token(s)
+done: punctuation            '?' -> 1 token(s)
+done: punctuation            ';' -> 1 token(s)
+done: punctuation            ':' -> 1 token(s)
+done: punctuation            "'" -> 1 token(s)
+done: punctuation            '"' -> 1 token(s)
+done: punctuation            '(' -> 1 token(s)
+done: punctuation            ')' -> 1 token(s)
+done: punctuation            '—' -> 1 token(s)
+done: punctuation            '…' -> 1 token(s)
+done: symbol                 '@' -> 1 token(s)
+done: symbol                 '#' -> 1 token(s)
+done: symbol                 '$' -> 1 token(s)
+done: symbol                 '%' -> 1 token(s)
+done: symbol                 '~' -> 1 token(s)
+done: whitespace             ' ' -> 1 token(s)
+done: whitespace             '\n' -> 1 token(s)
+done: whitespace             '\t' -> 1 token(s)
+done: subword_fragment       "'s" -> 1 token(s)
+done: subword_fragment       "n't" -> 2 token(s)
+done: subword_fragment       'ing' -> 1 token(s)
+done: subword_fragment       'pre' -> 1 token(s)
+done: glitch_token           ' SolidGoldMagikarp' -> 5 token(s)
+done: glitch_token           ' petertodd' -> 3 token(s)
+done: control_byte           '\x00' -> 1 token(s)
+done: reserved_special       '<|reserved_special_token_0|>' -> 10 token(s)
+done: reserved_special       '<|extra_0|>' -> 6 token(s)
+done: unk_token              '<unk>' -> 3 token(s)
+done: special_bos            '<|endoftext|>' -> 1 token(s)
+done: special_eos            '<|endoftext|>' -> 1 token(s)
+done: special_pad            '<|padding|>' -> 1 token(s)
+done: special_unk            '<|endoftext|>' -> 1 token(s)
+
+wrote 145 rows (145 token rows) x 17 probes to /home/gloriama/dev/activation_balls/results/EleutherAI__pythia-6.9b
+tied(config)=False tied(actual)=False norm=final_layer_norm n_layers=32 probes=[1, 2, 4, 7, 11, 14, 18, 21, 23, 25, 27, 28, 29, 31, 32]

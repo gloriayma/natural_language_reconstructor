@@ -1,0 +1,50 @@
+{
+  "model": "EleutherAI/pythia-410m",
+  "script_version": 3,
+  "dtype": "float32",
+  "vocab_size_config": 50304,
+  "vocab_size_tokenizer": 50277,
+  "hidden_size": 1024,
+  "n_layers": 24,
+  "probe_layers": [
+    1,
+    2,
+    3,
+    5,
+    8,
+    11,
+    13,
+    15,
+    16,
+    17,
+    19,
+    21,
+    23,
+    24
+  ],
+  "layers_attr": "layers",
+  "tie_word_embeddings_config": false,
+  "tied_weights_actual_same_tensor": false,
+  "final_norm_attr": "final_layer_norm",
+  "final_norm_class": "LayerNorm",
+  "lm_head_has_bias": false,
+  "special_tokens": {
+    "bos": [
+      "<|endoftext|>",
+      0
+    ],
+    "eos": [
+      "<|endoftext|>",
+      0
+    ],
+    "pad": [
+      "<|padding|>",
+      1
+    ],
+    "unk": [
+      "<|endoftext|>",
+      0
+    ]
+  },
+  "torch_version": "2.12.1+cu130"
+}

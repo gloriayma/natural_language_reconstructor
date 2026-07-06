@@ -49,6 +49,11 @@ No statistics/analysis per user instruction — deliverables are the raw outputs
   fade-out ⋯ fade-in row that expands on click. Verified on data: 72B folds L9–L77 (the
   attractor plateau), gpt2 folds L4–L11.
 
+- **2026-07-06 (fleet complete)**: all 11 accessible models done. One failure en route:
+  gemma-2-2b 401'd because setting HF_HOME orphans the HF token (see cluster doc trap #4);
+  fixed by copying the token to $HF_HOME/token, resubmitted, succeeded. Explorer rebuilt with
+  all 11 models (~3MB page) and redeployed. Llama pair still awaits the user's license click.
+
 ## Method (v2)
 
 `experiments/roundtrip.py`, submitted per-model by `experiments/submit_all.sh` (CPU-only jobs;
@@ -85,7 +90,28 @@ Outputs per model in `results/<model>/`: `meta.json` (tied? layers probed, speci
 `results.json` (full top-10s), `results.csv` (one row per token × probe), `activations.npz`
 (fp32 residuals, key `r{row}_{probe}`), `slurm-<jobid>.out`.
 
-## Results (v2 — appended as jobs finish)
+## Results (v2 — fleet complete 2026-07-06)
+
+Full panel (emb probe, normed variant; identity = input token comes back as top-1):
+
+| model | tied | layers | vocab | emb identity | median self-rank | mid-network resting token |
+|---|---|---|---|---|---|---|
+| gpt2 | ✓ | 12 | 50k | 95.8% | 1 | `,` |
+| gpt2-xl | ✓ | 48 | 50k | 98.6% | 1 | `Ġand` |
+| Qwen2.5-0.5B | ✓ | 24 | 152k | 99.3% | 1 | `ascus` |
+| gemma-2-2b | ✓ | 26 | 256k | 96.2% | 1 | `enumi` |
+| pythia-410m | ✗ | 24 | 50k | 0.0% | 29,048 | `Ġbast` |
+| pythia-6.9b | ✗ | 32 | 50k | 0.0% | 27,572 | `Ċ` |
+| Mistral-7B-v0.3 | ✗ | 32 | 33k | 0.7% | 10,551 | `▁kennis` |
+| OLMo-2-7B | ✗ | 32 | 100k | 0.0% | 69,403 | `contador` |
+| gpt-oss-20b | ✗ | 24 | 200k | 0.0% | 54,078 | `ĠBOTH` |
+| Qwen2.5-7B | ✗ | 28 | 152k | 0.0% | 65,626 | `Ġstrugg` |
+| Qwen2.5-72B | ✗ | 80 | 152k | 0.0% | 66,954 | Thai `สามาร` |
+
+Notes: Mistral's 0.7% is a single surviving word (`▁between`). gemma-2-2b's real output
+echoes the input token for 58% of bare words (76/131) — see observations.md. gpt-oss-20b
+loaded via transformers' automatic MXFP4→bf16 dequantization on CPU (warning in its slurm log,
+expected). Per-model files under `results/<model>/`.
 
 ### gpt2 (tied, 12 layers) — 2026-07-05, local, 39s
 

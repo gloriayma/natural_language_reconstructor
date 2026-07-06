@@ -1,0 +1,51 @@
+{
+  "model": "mistralai/Mistral-7B-v0.3",
+  "script_version": 3,
+  "dtype": "bfloat16",
+  "vocab_size_config": 32768,
+  "vocab_size_tokenizer": 32768,
+  "hidden_size": 4096,
+  "n_layers": 32,
+  "probe_layers": [
+    1,
+    2,
+    4,
+    7,
+    11,
+    14,
+    18,
+    21,
+    23,
+    25,
+    27,
+    28,
+    29,
+    31,
+    32
+  ],
+  "layers_attr": "layers",
+  "tie_word_embeddings_config": false,
+  "tied_weights_actual_same_tensor": false,
+  "final_norm_attr": "norm",
+  "final_norm_class": "MistralRMSNorm",
+  "lm_head_has_bias": false,
+  "special_tokens": {
+    "bos": [
+      "<s>",
+      1
+    ],
+    "eos": [
+      "</s>",
+      2
+    ],
+    "pad": [
+      null,
+      null
+    ],
+    "unk": [
+      "<unk>",
+      0
+    ]
+  },
+  "torch_version": "2.12.1+cu130"
+}
