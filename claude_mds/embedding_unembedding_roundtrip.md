@@ -7,7 +7,8 @@ through successive transformer layers up to the penultimate layer and unembed at
 layer — watch noise turn into next-token prediction.
 
 Sibling docs: [models.md](models.md) (model panel + access), [words.md](words.md) (word list),
-[cluster_and_gpus.md](cluster_and_gpus.md) (hardware + SLURM traps + env setup).
+[cluster_and_gpus.md](cluster_and_gpus.md) (hardware + SLURM traps + env setup),
+[observations.md](observations.md) (cool findings & analysis).
 No statistics/analysis per user instruction — deliverables are the raw outputs.
 
 ## Status log
