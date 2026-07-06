@@ -9,6 +9,11 @@ base64s it, and injects it into the HTML template below. Decoded token strings
 are reconstructed client-side (byte-level-BPE inverse map / SentencePiece rule),
 which keeps the payload roughly half the size.
 
+Styling follows gloria.ma (per CLAUDE.md HTML instructions): system-ui, cream
+#fffdf8 ground, warm ink #2d2926, tan borders #ded4c7 @ 8px radius, terracotta
+#9a5b4f as the single accent (here: the probability ramp), small-caps labels,
+italic hints, light-only by design (her site has no dark mode).
+
 Rerun after more models finish:  python experiments/build_viz.py
 """
 import base64
@@ -27,9 +32,9 @@ OUT = os.path.join(ROOT, "viz", "roundtrip.html")
 def tok_style(rows):
     """Detect tokenizer spelling convention from token strings."""
     sample = "".join(r.get("token") or "" for r in rows[:200])
-    if "Ġ" in sample or "Ċ" in sample:  # Ġ / Ċ
+    if "Ġ" in sample or "Ċ" in sample:
         return "bpe"
-    if "▁" in sample:  # ▁
+    if "▁" in sample:
         return "sp"
     return "bpe"
 
@@ -43,27 +48,29 @@ def pack_variant(v):
     }
     if "next_rank" in v:
         out["next"] = v["next_rank"]
+    if "final1_rank" in v:
+        out["f1"] = v["final1_rank"]
     return out
 
 
 def pack_model(mdir):
     meta = json.load(open(os.path.join(mdir, "meta.json")))
-    if meta.get("script_version") != 2:
+    if meta.get("script_version") not in (2, 3):
         return None
     rows = json.load(open(os.path.join(mdir, "results.json")))
     probes = ["emb"] + [f"layer_{i}" for i in meta["probe_layers"]] + ["final_logits"]
 
     words, cur = [], None
     for r in rows:
-        if cur is None or r["word"] != cur["w"] or r.get("pos", 0) <= len(cur["toks"]) - 1:
-            # new word entry (rows are emitted word-by-word, pos ascending)
-            if cur is None or r["word"] != cur["w"] or r.get("pos", 0) == 0:
-                cur = {"w": r["word"], "cat": r["category"], "toks": []}
-                words.append(cur)
+        if cur is None or r["word"] != cur["w"] or r.get("pos", 0) == 0:
+            cur = {"w": r["word"], "cat": r["category"], "toks": []}
+            words.append(cur)
         if r.get("n_tokens", 0) == 0:
             cur["note"] = r.get("note", "no tokens")
             continue
         tok = {"t": r["token"], "probes": {}}
+        if r.get("final_top1_token") is not None:
+            tok["ft"] = r["final_top1_token"]
         for p in probes:
             rec = r["probes"].get(p)
             if not rec:
@@ -91,7 +98,7 @@ def main():
             continue
         try:
             m = pack_model(mdir)
-        except Exception as e:  # partial/old dirs shouldn't kill the build
+        except Exception as e:
             print(f"skip {mdir}: {e}")
             continue
         if m:
@@ -111,125 +118,124 @@ def main():
     print(f"\nwrote {OUT}: {len(html)/1024:.0f} KB ({len(models)} models, payload {len(b64)/1024:.0f} KB b64)")
 
 
-TEMPLATE = r"""<title>Round-Trip Lens</title>
+TEMPLATE = r"""<title>round-trip lens</title>
 <style>
 :root{
-  --bg:#F6F7F9; --surface:#FFFFFF; --ink:#1B2430; --muted:#5C6875; --line:#E3E7EC;
-  --accent:#0E7C7B; --accent-soft:#0E7C7B22; --seq:#0E7C7B;
-  --next:#7C5CBF; --hit-bg:#E3F2EA; --hit-ink:#1C6B45; --chipmax:58;
-}
-@media (prefers-color-scheme: dark){:root{
-  --bg:#0E1319; --surface:#151C24; --ink:#E7ECF2; --muted:#93A1B0; --line:#242E3A;
-  --accent:#3FBFB6; --accent-soft:#3FBFB622; --seq:#2FA69E;
-  --next:#A78BFA; --hit-bg:#14342A; --hit-ink:#6FD9A6; --chipmax:46;
-}}
-:root[data-theme="light"]{
-  --bg:#F6F7F9; --surface:#FFFFFF; --ink:#1B2430; --muted:#5C6875; --line:#E3E7EC;
-  --accent:#0E7C7B; --accent-soft:#0E7C7B22; --seq:#0E7C7B;
-  --next:#7C5CBF; --hit-bg:#E3F2EA; --hit-ink:#1C6B45; --chipmax:58;
-}
-:root[data-theme="dark"]{
-  --bg:#0E1319; --surface:#151C24; --ink:#E7ECF2; --muted:#93A1B0; --line:#242E3A;
-  --accent:#3FBFB6; --accent-soft:#3FBFB622; --seq:#2FA69E;
-  --next:#A78BFA; --hit-bg:#14342A; --hit-ink:#6FD9A6; --chipmax:46;
+  --bg:#fffdf8; --ink:#2d2926; --muted:#6f675f; --line:#ded4c7; --line-strong:#b9ab98;
+  --accent:#9a5b4f; --accent-soft:#f3e6e0; --chipmax:52;
+  color-scheme: light; /* gloria.ma is light-only; so is this page, deliberately */
 }
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--ink);margin:0;
-  font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;}
+  font-family:system-ui,sans-serif;font-size:15px;line-height:1.6}
 .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
-header{padding:26px 28px 18px;border-bottom:1px solid var(--line)}
-header h1{margin:0;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
-  font-size:19px;font-weight:600;letter-spacing:.14em;text-transform:uppercase}
+header{max-width:1140px;margin:0 auto;padding:2.5rem 2rem 1.2rem}
+header h1{margin:0;font-size:1.35rem;font-weight:600}
 header h1 .dim{color:var(--accent)}
-header p{margin:4px 0 0;color:var(--muted);font-size:13.5px;max-width:64ch}
-.app{display:grid;grid-template-columns:296px 1fr;gap:0;align-items:start}
+header p{margin:.4rem 0 0;color:var(--muted);font-size:.92rem;max-width:66ch}
+.app{max-width:1140px;margin:0 auto;display:grid;grid-template-columns:288px minmax(0,1fr);
+  gap:1rem;align-items:start;padding:0 2rem}
 @media (max-width:880px){.app{grid-template-columns:1fr}}
-.rail{position:sticky;top:0;padding:20px 22px;display:flex;flex-direction:column;gap:16px}
+.rail{position:sticky;top:1rem;display:flex;flex-direction:column;gap:1rem;padding:.5rem 0}
 @media (max-width:880px){.rail{position:static}}
-.field label{display:block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;
-  color:var(--muted);margin-bottom:5px}
-select{width:100%;padding:7px 9px;border:1px solid var(--line);border-radius:7px;
-  background:var(--surface);color:var(--ink);font:inherit;font-size:14px}
-select:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
-.seg{display:flex;border:1px solid var(--line);border-radius:7px;overflow:hidden;background:var(--surface)}
-.seg button{flex:1;padding:6px 8px;border:0;background:transparent;color:var(--muted);
-  font:inherit;font-size:13px;cursor:pointer}
+.field label{display:block;font-variant:small-caps;letter-spacing:.08em;
+  color:var(--muted);margin-bottom:.3rem}
+select{width:100%;padding:.5rem .6rem;border:1px solid var(--line);border-radius:8px;
+  background:var(--bg);color:var(--ink);font:inherit;font-size:.92rem}
+select:focus,button:focus-visible{outline:none;border-color:var(--line-strong)}
+button:focus-visible{outline:2px solid var(--line-strong);outline-offset:1px}
+.seg{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg button{flex:1;padding:.4rem .5rem;border:0;background:transparent;color:var(--muted);
+  font:inherit;font-size:.86rem;cursor:pointer}
 .seg button[aria-pressed="true"]{background:var(--accent-soft);color:var(--ink);font-weight:600}
-.postabs{display:flex;flex-wrap:wrap;gap:6px}
-.postabs button{padding:5px 10px;border:1px solid var(--line);border-radius:7px;
-  background:var(--surface);color:var(--ink);cursor:pointer;font-size:13px;
+.postabs{display:flex;flex-wrap:wrap;gap:.4rem}
+.postabs button{padding:.3rem .65rem;border:1px solid var(--line);border-radius:8px;
+  background:var(--bg);color:var(--ink);cursor:pointer;font-size:.86rem;
   font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:pre}
 .postabs button[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft);font-weight:600}
-.meta{border:1px solid var(--line);border-radius:9px;background:var(--surface);
-  padding:12px 14px;font-size:13px;display:grid;grid-template-columns:auto 1fr;gap:3px 12px}
-.meta dt{color:var(--muted)} .meta dd{margin:0;font-variant-numeric:tabular-nums}
-.tiedpill{display:inline-block;padding:1px 8px;border-radius:99px;font-size:12px;font-weight:600}
-.tiedpill.tied{background:var(--hit-bg);color:var(--hit-ink)}
-.tiedpill.untied{background:var(--accent-soft);color:var(--ink)}
-.legend{font-size:12.5px;color:var(--muted);display:flex;flex-direction:column;gap:6px}
-.legend .row{display:flex;align-items:center;gap:8px}
-.swatch{width:26px;height:16px;border-radius:5px;flex:none;
-  background:color-mix(in oklab,var(--seq) 45%,var(--surface))}
-.ringdemo{width:26px;height:16px;border-radius:5px;flex:none;background:var(--surface);border:2px solid var(--accent)}
-.ringdemo.dashed{border:2px dashed var(--next)}
-.stack{padding:20px 28px 40px;min-width:0}
-.stackhead{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
-.stackhead b{color:var(--ink);letter-spacing:0;text-transform:none;
-  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:14px}
-.probe{display:grid;grid-template-columns:96px minmax(0,1fr) auto;gap:14px;
-  padding:9px 0;position:relative}
+.meta{border:1px solid var(--line);border-radius:8px;padding:.8rem 1rem;margin:0;
+  font-size:.86rem;display:grid;grid-template-columns:auto 1fr;gap:.15rem .8rem}
+.meta dt{color:var(--muted);font-variant:small-caps;letter-spacing:.05em}
+.meta dd{margin:0;font-variant-numeric:tabular-nums}
+.tiedpill{display:inline-block;padding:0 .55rem;border-radius:999px;font-size:.8rem;font-weight:600}
+.tiedpill.tied{background:var(--accent-soft);color:var(--accent)}
+.tiedpill.untied{border:1px solid var(--line-strong);color:var(--muted)}
+.legend{font-size:.82rem;color:var(--muted);font-style:italic;display:flex;
+  flex-direction:column;gap:.35rem}
+.legend .row{display:flex;align-items:center;gap:.5rem}
+.swatch{width:26px;height:15px;border-radius:5px;flex:none;
+  background:color-mix(in oklab,var(--accent) 42%,var(--bg))}
+.ringdemo{width:26px;height:15px;border-radius:5px;flex:none;background:var(--bg);
+  border:2px solid var(--accent)}
+.ringdemo.dashed{border:2px dashed var(--ink)}
+.stack{padding:.5rem 0 3rem;min-width:0}
+.chartcard{border:1px solid var(--line);border-radius:8px;padding:.8rem 1rem .5rem;margin:0 0 1rem}
+.chartcard h2{margin:0;font-variant:small-caps;letter-spacing:.08em;color:var(--muted);
+  font-size:.9rem;font-weight:600}
+.chartcard .sub{margin:0 0 .3rem;font-size:.8rem;color:var(--muted);font-style:italic}
+.chartcard svg{display:block;width:100%;height:auto}
+.chartlegend{display:flex;gap:1.2rem;font-size:.78rem;color:var(--muted);
+  font-style:italic;padding:.2rem 0 .3rem}
+.chartlegend .row{display:flex;align-items:center;gap:.45rem}
+.chartlegend .ln{width:26px;height:0;border-top:2px solid var(--accent);flex:none}
+.chartlegend .ln.dashed{border-top:2px dashed var(--ink)}
+.stackhead{font-variant:small-caps;letter-spacing:.08em;color:var(--muted);margin:0 0 .6rem}
+.stackhead b{color:var(--ink);letter-spacing:0;font-variant:normal;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.95rem}
+.probe{display:grid;grid-template-columns:92px minmax(0,1fr) auto;gap:.9rem;padding:.55rem 0}
 .probe + .probe{border-top:1px dashed var(--line)}
-.plabel{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12.5px;
-  color:var(--muted);display:flex;align-items:flex-start;gap:8px;padding-top:6px}
-.plabel .node{width:9px;height:9px;border-radius:50%;background:var(--accent);flex:none;margin-top:4px}
+.plabel{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.82rem;
+  color:var(--muted);display:flex;align-items:flex-start;gap:.5rem;padding-top:.35rem}
+.plabel .node{width:9px;height:9px;border-radius:50%;background:var(--accent);flex:none;margin-top:5px}
 .plabel.minor .node{background:var(--line)}
 .plabel .nm{white-space:nowrap}
-.chips{display:flex;flex-wrap:wrap;gap:6px;min-width:0}
-.chip{border:2px solid transparent;border-radius:7px;padding:3px 8px 4px;cursor:default;
-  background:color-mix(in oklab,var(--seq) calc(var(--p)*1%),var(--surface));
-  display:inline-flex;align-items:baseline;gap:7px;max-width:100%}
-.chip .tok{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px;
+.chips{display:flex;flex-wrap:wrap;gap:.4rem;min-width:0}
+.chip{border:2px solid transparent;border-radius:8px;padding:.15rem .5rem .2rem;cursor:default;
+  background:color-mix(in oklab,var(--accent) calc(var(--p)*1%),var(--bg));
+  display:inline-flex;align-items:baseline;gap:.45rem;max-width:100%}
+.chip .tok{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.86rem;
   white-space:pre;overflow:hidden;text-overflow:ellipsis;max-width:22ch}
-.chip .lp{font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.chip .lp{font-size:.74rem;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
 .chip.self{border-color:var(--accent)}
-.chip.nexttok{border-style:dashed;border-color:var(--next)}
-.chip .tag{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.chip.nexttok{border-style:dashed;border-color:var(--ink)}
+.chip .tag{font-size:.66rem;font-weight:700;letter-spacing:.06em;font-variant:small-caps}
 .chip.self .tag{color:var(--accent)}
-.chip.nexttok .tag{color:var(--next)}
-.ranks{display:flex;flex-direction:column;gap:4px;align-items:flex-end;padding-top:3px}
-.badge{font-size:11.5px;padding:2px 8px;border-radius:99px;background:var(--surface);
+.chip.nexttok .tag{color:var(--ink)}
+.ranks{display:flex;flex-direction:column;gap:.25rem;align-items:flex-end;padding-top:.2rem}
+.badge{font-size:.78rem;padding:.05rem .55rem;border-radius:999px;
   border:1px solid var(--line);color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
 .badge b{color:var(--ink);font-weight:600}
-.badge.hit{background:var(--hit-bg);border-color:transparent;color:var(--hit-ink)}
-.badge.hit b{color:var(--hit-ink)}
-.note{color:var(--muted);font-size:13px;font-style:italic;padding:8px 0}
-footer{padding:14px 28px 30px;color:var(--muted);font-size:12px;border-top:1px solid var(--line)}
+.badge.hit{background:var(--accent-soft);border-color:transparent;color:var(--accent)}
+.badge.hit b{color:var(--accent)}
+.note{color:var(--muted);font-size:.9rem;font-style:italic;padding:.5rem 0}
+footer{max-width:1140px;margin:0 auto;padding:1rem 2rem 2.5rem;color:var(--muted);
+  font-size:.8rem;font-style:italic}
 #tip{position:fixed;z-index:10;pointer-events:none;background:var(--ink);color:var(--bg);
-  border-radius:7px;padding:7px 10px;font-size:12px;max-width:340px;display:none;line-height:1.45}
+  border-radius:8px;padding:.45rem .65rem;font-size:.8rem;max-width:340px;display:none;line-height:1.5}
 #tip .mono{word-break:break-all}
-#tip .k{opacity:.65}
+#tip .k{opacity:.6}
 @media (prefers-reduced-motion:no-preference){.chip{transition:border-color .12s}}
 </style>
 
 <header>
-  <h1>Round-Trip <span class="dim">Lens</span></h1>
-  <p>Pick a model and a word: each row unembeds the residual stream at one probe point,
-     from the raw embedding down to the model&rsquo;s real output. Chips are the top-10 tokens
+  <h1>round-trip <span class="dim">lens</span></h1>
+  <p>pick a model and a word: each row unembeds the residual stream at one probe point,
+     from the raw embedding down to the model&rsquo;s real output. chips are the top-10 tokens
      (darker&nbsp;=&nbsp;more probable) with log-probs; badges track where the input token itself
      (&ldquo;self&rdquo;) and the word&rsquo;s true next token (&ldquo;next&rdquo;) rank.</p>
 </header>
 
 <div class="app">
 <aside class="rail">
-  <div class="field"><label for="msel">Model</label><select id="msel"></select></div>
-  <div class="field"><label for="wsel">Word</label><select id="wsel"></select></div>
-  <div class="field"><label>Token position</label><div class="postabs" id="ptabs"></div></div>
-  <div class="field"><label>Unembedding</label>
+  <div class="field"><label for="msel">model</label><select id="msel"></select></div>
+  <div class="field"><label for="wsel">word</label><select id="wsel"></select></div>
+  <div class="field"><label>token position</label><div class="postabs" id="ptabs"></div></div>
+  <div class="field"><label>unembedding</label>
     <div class="seg" id="vseg">
       <button data-v="normed" aria-pressed="true">logit lens (final norm)</button>
       <button data-v="raw" aria-pressed="false">raw</button>
     </div></div>
-  <div class="field"><label>Token display</label>
+  <div class="field"><label>token display</label>
     <div class="seg" id="dseg">
       <button data-d="decoded" aria-pressed="true">decoded</button>
       <button data-d="tokens" aria-pressed="false">raw tokens</button>
@@ -244,6 +250,7 @@ footer{padding:14px 28px 30px;color:var(--muted);font-size:12px;border-top:1px s
 </aside>
 <main class="stack">
   <p class="stackhead" id="stackhead"></p>
+  <div id="chart"></div>
   <div id="rows"></div>
 </main>
 </div>
@@ -271,7 +278,7 @@ function decodeSP(tok){
   const m=tok.match(/^<0x([0-9A-Fa-f]{2})>$/);
   if(m)return td.decode(new Uint8Array([parseInt(m[1],16)]));
   return tok.replaceAll("▁"," ");}
-function visible(s){ // make control chars + edge spaces visible without lying about content
+function visible(s){
   let out="";
   for(const ch of s){const c=ch.codePointAt(0);
     if(c===0)out+="␀"; else if(c===10)out+="␊"; else if(c===9)out+="␉";
@@ -284,35 +291,32 @@ function disp(model,tok){
 /* ---------- rendering ---------- */
 const $=id=>document.getElementById(id);
 const fmt=n=>n.toLocaleString("en-US");
-function probeLabel(p,model){
+function probeLabel(p){
   if(p==="emb")return"emb";
   if(p==="final_logits")return"output";
   return"L"+p.slice(6);}
 function render(){
   const model=DATA.models[S.m],word=model.words[S.w];
-  /* meta card */
   $("meta").innerHTML=
     `<dt>weights</dt><dd><span class="tiedpill ${model.tied?"tied":"untied"}">${model.tied?"tied":"untied"}</span></dd>`+
     `<dt>layers</dt><dd>${model.layers}</dd><dt>hidden</dt><dd>${fmt(model.hidden)}</dd>`+
     `<dt>vocab</dt><dd>${fmt(model.vocab)}</dd><dt>spelling</dt><dd>${model.style==="sp"?"SentencePiece ▁":"byte-level BPE Ġ"}</dd>`;
-  /* position tabs */
   const pt=$("ptabs");pt.innerHTML="";
   word.toks.forEach((t,i)=>{const b=document.createElement("button");
     b.textContent=disp(model,t.t);b.setAttribute("aria-pressed",String(i===S.pos));
     b.onclick=()=>{S.pos=i;render();};pt.appendChild(b);});
   if(word.note){$("rows").innerHTML=`<p class="note">“${word.w}” ${word.note} in this tokenizer.</p>`;
-    $("stackhead").textContent="";return;}
+    $("stackhead").textContent="";$("chart").innerHTML="";return;}
   const tok=word.toks[S.pos],nextTok=word.toks[S.pos+1]?.t??null;
   $("stackhead").innerHTML=`trajectory for token <b>${escapeHtml(disp(model,tok.t))}</b>`+
     ` (${S.pos+1} of ${word.toks.length}${nextTok?`, true next: <b>${escapeHtml(disp(model,nextTok))}</b>`:""})`;
-  /* probe rows */
   const rows=$("rows");rows.innerHTML="";
   for(const p of model.probes){
     const rec=tok.probes[p];if(!rec)continue;
     const v=p==="final_logits"?rec.raw:(rec[S.variant]||rec.raw);if(!v)continue;
     const row=document.createElement("div");row.className="probe";
     const major=p==="emb"||p==="final_logits";
-    row.innerHTML=`<div class="plabel${major?"":" minor"}"><span class="node"></span><span class="nm">${probeLabel(p,model)}</span></div>`;
+    row.innerHTML=`<div class="plabel${major?"":" minor"}"><span class="node"></span><span class="nm">${probeLabel(p)}</span></div>`;
     const chips=document.createElement("div");chips.className="chips";
     v.top.forEach(([t,lp],k)=>{
       const c=document.createElement("button");c.className="chip";
@@ -331,6 +335,56 @@ function render(){
     ranks.innerHTML=`<span class="badge${v.self===1?" hit":""}">self <b>#${fmt(v.self)}</b></span>`+
       (v.next!=null?`<span class="badge${v.next===1?" hit":""}">next <b>#${fmt(v.next)}</b></span>`:"");
     row.appendChild(ranks);rows.appendChild(row);}
+  renderChart(model,tok);
+}
+/* ---------- rank-trajectory chart ---------- */
+function gridLabel(d){return d<3?String(10**d):d<6?(10**(d-3))+"k":(10**(d-6))+"M";}
+function renderChart(model,tok){
+  const host=$("chart");
+  const pts=[];
+  for(const p of model.probes){
+    const rec=tok.probes[p];if(!rec)continue;
+    const v=p==="final_logits"?rec.raw:(rec[S.variant]||rec.raw);if(!v)continue;
+    pts.push({x:p==="emb"?0:p==="final_logits"?model.layers+1:+p.slice(6),
+      label:probeLabel(p),self:v.self,f1:v.f1});}
+  if(pts.length<2){host.innerHTML="";return;}
+  const hasF1=pts.some(q=>q.f1!=null);
+  const W=760,H=240,L=46,R=86,T=14,B=32,pw=W-L-R,ph=H-T-B;
+  const dec=Math.max(1,Math.ceil(Math.log10(model.vocab)));
+  const xmax=model.layers+1;
+  const px=x=>L+x/xmax*pw, py=r=>T+Math.log10(Math.max(1,r))/dec*ph;
+  let g="";
+  for(let d=0;d<=dec;d++){const y=T+d/dec*ph;
+    g+=`<line x1="${L}" y1="${y}" x2="${W-R}" y2="${y}" style="stroke:var(--line)" stroke-width="1"/>`+
+       `<text x="${L-7}" y="${y+3.5}" text-anchor="end" font-size="10.5" style="fill:var(--muted)">${gridLabel(d)}</text>`;}
+  for(const q of pts)
+    g+=`<text x="${px(q.x)}" y="${H-B+16}" text-anchor="middle" font-size="10" style="fill:var(--muted)">${q.label==="output"?"out":q.label.replace("L","")}</text>`;
+  g+=`<text x="${L-7}" y="${T-4}" text-anchor="end" font-size="9.5" font-style="italic" style="fill:var(--muted)">rank</text>`;
+  const series=[["self","var(--accent)","",q=>q.self]];
+  if(hasF1)series.push(["final top-1","var(--ink)","5 4",q=>q.f1]);
+  let marks="";
+  for(const[nm,col,dash,get]of series){
+    const line=pts.filter(q=>get(q)!=null).map(q=>`${px(q.x)},${py(get(q))}`).join(" ");
+    g+=`<polyline points="${line}" fill="none" style="stroke:${col}" stroke-width="2"${dash?` stroke-dasharray="${dash}"`:""}/>`;
+    const last=pts[pts.length-1];
+    g+=`<text x="${px(last.x)+8}" y="${py(get(last))+3.5}" font-size="10.5" style="fill:var(--ink)">${nm}</text>`;
+    for(const q of pts){if(get(q)==null)continue;
+      marks+=`<circle cx="${px(q.x)}" cy="${py(get(q))}" r="4" style="fill:var(--bg);stroke:${col}" stroke-width="2"/>`+
+        `<circle class="pt" data-nm="${nm}" data-lb="${q.label}" data-r="${get(q)}" cx="${px(q.x)}" cy="${py(get(q))}" r="10" fill="transparent"/>`;}}
+  const sub=hasF1&&tok.ft!=null
+    ?`final top-1 = what the model actually predicts after this token: <span class="mono">${escapeHtml(disp(model,tok.ft))}</span> &middot; rank 1 is at the top, log scale`
+    :`rank 1 is at the top, log scale`;
+  host.innerHTML=`<section class="chartcard"><h2>rank trajectory</h2>
+    <p class="sub">${sub}</p>
+    <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="rank of self and final top-1 token across layers">${g}${marks}</svg>
+    <div class="chartlegend"><span class="row"><span class="ln"></span> self (the input token)</span>${hasF1?'<span class="row"><span class="ln dashed"></span> final top-1</span>':""}</div>
+    </section>`;
+  host.querySelectorAll(".pt").forEach(c=>{
+    const show=e=>{const el=$("tip");
+      el.innerHTML=`<div>${c.dataset.lb} &middot; ${c.dataset.nm}</div><div><span class="k">rank</span> #${fmt(+c.dataset.r)}</div>`;
+      el.style.display="block";place(e);};
+    c.addEventListener("pointerenter",show);c.addEventListener("pointermove",place);
+    c.addEventListener("pointerleave",hideTip);});
 }
 function escapeHtml(s){return s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
 /* ---------- tooltip ---------- */
@@ -377,7 +431,6 @@ function initControls(){
   }catch(err){
     document.querySelector(".stack").innerHTML=`<p class="note">Could not unpack data (${escapeHtml(String(err))}). This page needs a browser with DecompressionStream (2023+).</p>`;
     return;}
-  // default to a fun multi-token word if present
   const w0=DATA.models[0].words.findIndex(w=>w.cat==="multi_token_by_design");
   if(w0>0)S.w=w0;
   initControls();$("wsel").value=S.w;render();

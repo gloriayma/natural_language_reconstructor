@@ -97,7 +97,7 @@ def main():
 
     meta = {
         "model": args.model,
-        "script_version": 2,
+        "script_version": 3,
         "dtype": args.dtype,
         "vocab_size_config": getattr(model.config, "vocab_size", None),
         "vocab_size_tokenizer": len(tokenizer),
@@ -141,7 +141,7 @@ def main():
             normed = None
         return raw, normed
 
-    def topk_and_ranks(logits, self_id, next_id, k):
+    def topk_and_ranks(logits, self_id, next_id, k, final1_id=None):
         probs = F.softmax(logits, dim=-1)
         top = torch.topk(probs, k)
         out = {
@@ -158,6 +158,8 @@ def main():
         }
         if next_id is not None:
             out["next_rank"] = int((logits > logits[next_id]).sum()) + 1
+        if final1_id is not None:
+            out["final1_rank"] = int((logits > logits[final1_id]).sum()) + 1
         return out
 
     # build the run list: words from the list, then per-model special tokens
@@ -185,9 +187,11 @@ def main():
         with torch.no_grad():
             out = model(torch.tensor([ids], dtype=torch.long))
         final_logits = out.logits[0].float()  # [seq, vocab] — the model's true output
+        final_top1 = final_logits.argmax(-1)  # [seq] — what the model actually predicts next
 
         for pos, tid in enumerate(ids):
             next_id = int(ids[pos + 1]) if pos + 1 < len(ids) else None
+            f1_id = int(final_top1[pos])
             row = {
                 "word": entry["text"],
                 "category": entry["category"],
@@ -197,21 +201,23 @@ def main():
                 "token": tokenizer.convert_ids_to_tokens(int(tid)),
                 "token_decoded": tokenizer.decode([int(tid)]),
                 "next_token_id": next_id,
+                "final_top1_id": f1_id,
+                "final_top1_token": tokenizer.convert_ids_to_tokens(f1_id),
                 "probes": {},
             }
             row_idx = len(rows)
             for probe in ["emb"] + [f"layer_{i}" for i in probe_layers]:
                 x = captured[probe][0][pos]
                 raw, normed = unembed(x)
-                rec = {"raw": topk_and_ranks(raw, int(tid), next_id, args.topk)}
+                rec = {"raw": topk_and_ranks(raw, int(tid), next_id, args.topk, f1_id)}
                 if normed is not None:
-                    rec["normed"] = topk_and_ranks(normed, int(tid), next_id, args.topk)
+                    rec["normed"] = topk_and_ranks(normed, int(tid), next_id, args.topk, f1_id)
                 if probe == "emb":
                     rec["l2_norm"] = float(x.float().norm())
                 row["probes"][probe] = rec
                 act_store[f"r{row_idx}_{probe}"] = x.float().numpy()
             row["probes"]["final_logits"] = {
-                "raw": topk_and_ranks(final_logits[pos], int(tid), next_id, args.topk)
+                "raw": topk_and_ranks(final_logits[pos], int(tid), next_id, args.topk, f1_id)
             }
             rows.append(row)
         print(f"done: {entry['category']:22s} {entry['text']!r} -> {len(ids)} token(s)", flush=True)
@@ -221,9 +227,10 @@ def main():
     np.savez_compressed(os.path.join(args.outdir, "activations.npz"), **act_store)
 
     csv_fields = [
-        "word", "category", "n_tokens", "pos", "token_id", "token", "next_token_id", "probe",
-        "raw_top1", "raw_top1_prob", "raw_self_rank", "raw_next_rank",
-        "normed_top1", "normed_top1_prob", "normed_self_rank", "normed_next_rank",
+        "word", "category", "n_tokens", "pos", "token_id", "token", "next_token_id",
+        "final_top1_token", "probe",
+        "raw_top1", "raw_top1_prob", "raw_self_rank", "raw_next_rank", "raw_final1_rank",
+        "normed_top1", "normed_top1_prob", "normed_self_rank", "normed_next_rank", "normed_final1_rank",
         "raw_top5", "normed_top5",
     ]
     with open(os.path.join(args.outdir, "results.csv"), "w", newline="") as f:
@@ -240,6 +247,7 @@ def main():
                         flat[f"{name}_top1_prob"] = round(r["top"][0]["prob"], 6)
                         flat[f"{name}_self_rank"] = r["self_rank"]
                         flat[f"{name}_next_rank"] = r.get("next_rank")
+                        flat[f"{name}_final1_rank"] = r.get("final1_rank")
                         flat[f"{name}_top5"] = ";".join(f"{t['token']}:{t['prob']:.4f}" for t in r["top"][:5])
                 wr.writerow(flat)
 

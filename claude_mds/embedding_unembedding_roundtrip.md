@@ -28,6 +28,14 @@ No statistics/analysis per user instruction — deliverables are the raw outputs
   (branch `embed-unembed-roundtrip`, draft PR #1). Snag: briefly clobbered the repo's
   template .gitignore with a stub; restored from the initial commit.
 
+- **2026-07-05 (v3 + restyle)**: viz restyled to match gloria.ma per new CLAUDE.md HTML
+  instructions (cream/terracotta/system-ui, light-only, same information density) and gained a
+  rank-trajectory chart (log-scale, rank 1 at top: self rank + rank of the model's final
+  top-1 token across layers). The latter needed a data field the runner didn't record, so
+  `roundtrip.py` is now v3: adds `final1_rank` per probe/variant + `final_top1_token` per row.
+  gpt2 rerun locally; 72B resubmitted (job 2655457); the 9 still-pending jobs pick v3 up
+  automatically since SLURM reads the script at start.
+
 ## Method (v2)
 
 `experiments/roundtrip.py`, submitted per-model by `experiments/submit_all.sh` (CPU-only jobs;
