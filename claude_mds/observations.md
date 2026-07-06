@@ -84,6 +84,22 @@ about training-time behavior, not embedding geometry.
   (22/56). At layer 1: 72B 0/56 — the one shiny gpt2 case (`crypt`→`oc` rank 1 at L1) is
   the exception (1/56), not the rule.
 
+## 8. The unembedding matrix is not normalized — and that explains the attractors
+
+Measured directly from the weights (rows of `lm_head.weight` / gpt2's tied `wte`):
+
+- **gpt2**: row norms 2.45–6.32 (median 3.95). Smallest norms = the most frequent/whitespace
+  tokens (`Ġthe` and `Ċ` are the 0th percentile; `,`, tab, NUL the 2nd) — exactly the tokens
+  whose round-trips are weak or fail, since a tied token's self-logit is its squared norm.
+  ` SolidGoldMagikarp` is an ordinary 53rd percentile (more evidence glitchiness ≠ geometry).
+- **Qwen2.5-72B**: row norms 0.40–1.90 (median 0.88). The mid-network Thai attractor token
+  (obs. 4) has norm 1.314 = **100th percentile of all 152k rows** — the "resting prediction"
+  is literally the vocabulary's loudest unembedding row, winning the dot-product race whenever
+  the residual aligns strongly with nothing. The never-trained padded rows (151,665+) sit at
+  the floor, ~0.42 (init scale).
+- Caveat: the head consumes the final-norm output, whose learned per-dim gain folds into the
+  effective per-token gain; raw row norms already account for the observed phenomena though.
+
 ## Caveats
 
 Two models; one run (deterministic); ~12–17 probe layers not all layers; bare-word
@@ -93,3 +109,5 @@ compared against (obs. 3 is eyeball-level).
 ## History
 
 - **2026-07-05**: First version, from gpt2 + Qwen2.5-72B v3 data (9 models pending).
+- **2026-07-05 (later)**: Added obs. 8 (unembedding row norms measured from weights; attractor
+  = max-norm row confirmed), prompted by user questions about invertibility and normalization.
