@@ -99,6 +99,14 @@ Measured directly from the weights (rows of `lm_head.weight` / gpt2's tied `wte`
   the floor, ~0.42 (init scale).
 - Caveat: the head consumes the final-norm output, whose learned per-dim gain folds into the
   effective per-token gain; raw row norms already account for the observed phenomena though.
+- **The capture condition** (user-derived): row j steals token t's round-trip iff
+  cos(w_j, w_t) · ‖w_j‖ > ‖w_t‖ — capture basins grow with row norm. Verified in gpt2 weights:
+  tab and NUL (norm 3.09, undertrained) are both captured by the same three anomalous
+  high-norm rows (`conservancy`, `ModLoader`, `BuyableInstoreAndOnline`; norms 5.2–5.7,
+  cos ≈ 0.6 to the whitespace cluster: 0.64×5.19 = 3.32 > 3.09). Trained tokens are safe
+  because self-cos = 1.0 is a huge moat (a cos-0.6 rival needs 1.67× your norm; gpt2's whole
+  norm range is 2.6×). Mid-network, no token has a large cosine to the residual, so ranking
+  degenerates to ~pure norm order — the attractor regime is this argument taken to its limit.
 
 ## Caveats
 
@@ -111,3 +119,6 @@ compared against (obs. 3 is eyeball-level).
 - **2026-07-05**: First version, from gpt2 + Qwen2.5-72B v3 data (9 models pending).
 - **2026-07-05 (later)**: Added obs. 8 (unembedding row norms measured from weights; attractor
   = max-norm row confirmed), prompted by user questions about invertibility and normalization.
+- **2026-07-05 (later still)**: Added the capture condition to obs. 8 after the user pointed
+  out high-norm rows should capture more round-trips — confirmed in weights (tab/NUL captured
+  by the same three high-norm anomalous rows).
