@@ -131,8 +131,7 @@ body{background:var(--bg);color:var(--ink);margin:0;
   font-family:system-ui,sans-serif;font-size:15px;line-height:1.6}
 .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
 header{max-width:1120px;margin:0 auto;padding:3.2rem 2rem 1.6rem}
-header h1{margin:0;font-size:1.45rem;font-weight:600;text-wrap:balance;max-width:34ch}
-header h1 .dim{color:var(--accent)}
+header h1{margin:0;font-size:clamp(1rem,2.6vw,1.45rem);font-weight:600;white-space:nowrap}
 header .blurb{margin:.8rem 0 0;color:var(--ink);font-size:.95rem;max-width:72ch}
 header details{margin:.9rem 0 0;max-width:72ch}
 header summary{cursor:pointer;font-variant:small-caps;letter-spacing:.08em;
@@ -241,7 +240,7 @@ footer{max-width:1120px;margin:0 auto;padding:1rem 2rem 3rem;color:var(--muted);
 </style>
 
 <header>
-  <h1>what does the <span class="dim">unembedding layer</span> do, on intermediate activations?</h1>
+  <h1>what does the unembedding layer do on intermediate activations?</h1>
   <p class="blurb">if you embed a token and immediately unembed it, do you get the token back?
      that is: are the embedding and unembedding layers inverses — or do they at least live in
      the same space, tied together by bigram statistics, or by nothing except the layers in
