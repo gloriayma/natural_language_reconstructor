@@ -166,6 +166,17 @@ button:focus-visible{outline:2px solid var(--line-strong);outline-offset:1px}
 .tiedpill{display:inline-block;padding:0 .55rem;border-radius:999px;font-size:.8rem;font-weight:600}
 .tiedpill.tied{background:var(--accent-soft);color:var(--accent)}
 .tiedpill.untied{border:1px solid var(--line-strong);color:var(--muted)}
+.obs{border:1px solid var(--line);border-radius:8px;padding:.8rem 1rem}
+.obs h2{margin:0;font-variant:small-caps;letter-spacing:.08em;color:var(--muted);
+  font-size:.9rem;font-weight:600}
+.obs ul{margin:.35rem 0 0;padding-left:1.1rem;font-size:.86rem}
+.obs li{margin:.2rem 0}
+.obs a{color:var(--accent);cursor:pointer;text-decoration:underline}
+.chipwrap{position:relative;min-width:0}
+.chipwrap::after{content:"";position:absolute;top:0;right:0;bottom:.85rem;width:3rem;
+  pointer-events:none;background:linear-gradient(90deg,transparent,var(--bg));
+  opacity:0;transition:opacity .15s}
+.chipwrap.overflowing::after{opacity:1}
 .legend{font-size:.82rem;color:var(--muted);font-style:italic;display:flex;
   flex-direction:column;gap:.4rem}
 .legend .row{display:flex;align-items:center;gap:.5rem}
@@ -292,6 +303,15 @@ footer{max-width:1120px;margin:0 auto;padding:1rem 2rem 3rem;color:var(--muted);
       <button data-d="tokens" aria-pressed="false">raw tokens</button>
     </div></div>
   <dl class="meta" id="meta"></dl>
+  <div class="obs">
+    <h2>interesting observations</h2>
+    <!-- EDIT ME: add or remove observations below. an <a data-word="..."> link
+         jumps the explorer to that word in the current model. after editing,
+         rerun: python experiments/build_viz.py -->
+    <ul>
+      <li>check out each token of <a data-word="antidisestablishmentarianism">antidisestablishmentarianism</a></li>
+    </ul>
+  </div>
   <div class="legend">
     <div class="row"><span class="swatch"></span> darker = more probable</div>
     <div class="row"><span class="ringdemo"></span> the input token itself</div>
@@ -398,11 +418,12 @@ function render(){
       c.addEventListener("pointerleave",hideTip);
       c.addEventListener("focus",e=>tip(e,model,t,lp,k));c.addEventListener("blur",hideTip);
       chips.appendChild(c);});
-    row.appendChild(chips);
+    const wrap=document.createElement("div");wrap.className="chipwrap";
+    wrap.appendChild(chips);row.appendChild(wrap);
     const ranks=document.createElement("div");ranks.className="ranks";
     ranks.innerHTML=`<span class="badge${it.v.self===1?" hit":""}">self <b>#${fmt(it.v.self)}</b></span>`+
       (it.v.next!=null?`<span class="badge${it.v.next===1?" hit":""}">next <b>#${fmt(it.v.next)}</b></span>`:"");
-    row.appendChild(ranks);rows.appendChild(row);};
+    row.appendChild(ranks);rows.appendChild(row);wireFade(wrap,chips);};
   if(S.showQuiet){
     for(const it of items)addRow(it);
     const un=document.createElement("button");un.className="unfold";
@@ -428,6 +449,13 @@ function render(){
       addRow(items[i]);i++;}
   }
   renderChart(model,tok);
+}
+function wireFade(wrap,chips){
+  const update=()=>{const over=chips.scrollWidth>chips.clientWidth+1
+      &&chips.scrollLeft+chips.clientWidth<chips.scrollWidth-2;
+    wrap.classList.toggle("overflowing",over);};
+  chips.addEventListener("scroll",update,{passive:true});
+  requestAnimationFrame(update);
 }
 function escapeHtml(s){return s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
 /* ---------- rank-trajectory chart ---------- */
@@ -529,6 +557,9 @@ function initControls(){
   const w0=DATA.models[0].words.findIndex(w=>w.cat==="multi_token_by_design");
   if(w0>0)S.w=w0;
   initControls();$("wsel").value=S.w;render();
+  document.querySelectorAll(".obs a[data-word]").forEach(a=>a.onclick=()=>{
+    const i=DATA.models[S.m].words.findIndex(w=>w.w===a.dataset.word);
+    if(i>=0){S.w=i;S.pos=0;S.showQuiet=false;$("wsel").value=i;render();}});
 })();
 </script>
 """
