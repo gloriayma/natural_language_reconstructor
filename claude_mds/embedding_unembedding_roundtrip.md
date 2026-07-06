@@ -1,0 +1,100 @@
+# Embedding → Unembedding Round-Trip (+ layerwise logit lens)
+
+**Question** (from `0_plan.md`): is the embedding layer the inverse of the unembedding layer?
+Embed each word fresh (no context), grab the post-embedding activation, push it through the
+unembedding head, and see what comes out. v2 (same day, user request): also run the tokens
+through successive transformer layers up to the penultimate layer and unembed at each probed
+layer — watch noise turn into next-token prediction.
+
+Sibling docs: [models.md](models.md) (model panel + access), [words.md](words.md) (word list),
+[cluster_and_gpus.md](cluster_and_gpus.md) (hardware + SLURM traps + env setup).
+No statistics/analysis per user instruction — deliverables are the raw outputs.
+
+## Status log
+
+- **2026-07-05 (v1)**: embed→unembed only. Env built, panel chosen, jobs submitted. First batch
+  (2655387–97) lost to the sh-not-bash sbatch trap (see cluster doc), resubmitted (2655399–409).
+  gpt2 + Qwen2.5-72B completed; results archived in `results_v1_embed_only/`.
+- **2026-07-05 (v2)**: user added the layerwise requirement and removed the holdout concept.
+  Script rewritten (`experiments/roundtrip.py`, `script_version: 2`), v1 jobs cancelled, fleet
+  resubmitted as jobs 2655416–2655426 (11 models; 2 Llama models still pending user's HF
+  license click). gpt2 ran locally in 39s.
+
+## Method (v2)
+
+`experiments/roundtrip.py`, submitted per-model by `experiments/submit_all.sh` (CPU-only jobs;
+this experiment never needs a GPU — see cluster doc for why CPU works even at 72B).
+
+1. Load model (fp32 <3B, bf16 ≥7B) + tokenizer; one full forward per word,
+   `add_special_tokens=False`, no context. Per-model BOS/EOS/PAD/UNK are run too.
+2. Forward hooks capture the embedding-module output and every decoder layer's output at every
+   token position. (GPT-2's learned position embeddings are added *after* the hooked embedding
+   module, so the `emb` probe is the pure token embedding in all families; rotary models add
+   nothing at the embedding.)
+3. Probe points: `emb`, decoder layers sampled by `pick_probe_layers` (all layers if ≤12, else
+   ~12 evenly spaced always including 1, 2, penultimate, final), plus `final_logits` = the
+   model's true output head (includes final norm + any logit softcapping).
+4. At each probe, each position's residual goes through the unembedding two ways — **raw**
+   (`lm_head(x)`) and **normed** (`lm_head(final_norm(x))`, logit-lens convention) — both
+   recorded because "the unembedding layer" is ambiguous between them.
+5. Recorded per (token, probe, variant): top-10 tokens + softmax probs, **self_rank** (rank of
+   the input token — did it round-trip?), **next_rank** (rank of the word's actual next token,
+   where the word has one — is this becoming a next-token predictor?). Logits computed in fp32.
+   No sampling ⇒ deterministic, single run.
+
+Validation on gpt2: the normed probe at the last layer reproduces `final_logits` exactly
+(same top-1, prob, ranks) — the probe math is the model's real unembedding path.
+
+Methodological footnotes:
+- Gemma-2 multiplies embeddings by √d_model *after* the embed module, and softcaps final
+  logits; scalar/monotonic ⇒ rankings unaffected (probs at the `emb` probe are "pre-scale").
+- Intermediate-layer logit lens on GPT-2-class models is known to be murky in middle layers
+  (motivation for tuned-lens); expect weird middle-layer top-1s there — that's the model, not
+  a bug.
+
+Outputs per model in `results/<model>/`: `meta.json` (tied? layers probed, special-token ids),
+`results.json` (full top-10s), `results.csv` (one row per token × probe), `activations.npz`
+(fp32 residuals, key `r{row}_{probe}`), `slurm-<jobid>.out`.
+
+## Results (v2 — appended as jobs finish)
+
+### gpt2 (tied, 12 layers) — 2026-07-05, local, 39s
+
+143 token rows × 14 probes. At `emb`: every token returns **itself at rank 1** (raw p≈0.8,
+normed p≈1.0). Sample trajectory, `cryptocurrency` = crypt|oc|urrency, pos 0 (normed probe):
+
+| probe | top-1 | self_rank | next_rank |
+|---|---|---|---|
+| emb | `crypt` (1.000) | 1 | 22918 |
+| layer_1 | `oc` (0.029) | 9 | **1** |
+| layer_2…11 | `,` (~0.03) | ~18000 | ~1000 |
+| layer_12 | `.` (0.048) | 875 | 99 |
+| final_logits | `.` (0.048) | 875 | 99 |
+
+(The murky middle is the known GPT-2 logit-lens behavior; layer_1 already ranks the true next
+token #1.)
+
+### Qwen/Qwen2.5-72B (untied, 80 layers) — 2026-07-05, sbatch job 2655426
+
+142 token rows × 14 probes (layers 1,2,9,18,27,36,44,53,62,71,79,80). At `emb`: **no
+round-trip** — top-1s are junk tokens, self-ranks in the thousands+. Sample trajectory,
+`cryptocurrency` = crypt|ocurrency, pos 0 (normed probe):
+
+| probe | top-1 | self_rank | next_rank |
+|---|---|---|---|
+| emb | `&action` (0.037) | 4477 | 98309 |
+| layer_2…71 | a Thai-script attractor token (p≈0.5) | ~6000–10000 | ~7000–9000 |
+| layer_79 | `1` (0.16) | 83106 | 18321 |
+| layer_80 | `os` (0.072) | 9012 | **7** |
+| final_logits | `os` (0.073) | 8988 | **6** |
+
+The noise→next-token transition is visible: the word's true next token climbs from rank
+~98k at the embedding to rank 6–7 at the output (`crypt`→`os`, i.e. "cryptos", with
+`ocurrency` close behind). Layer-80 normed probe matches `final_logits` up to bf16/fp32
+numeric drift, revalidating the pipeline on an 80-layer model.
+
+### v1 archive (embed→unembed only, superseded)
+
+`results_v1_embed_only/`: gpt2 — perfect round-trip at rank 1 everywhere; Qwen2.5-72B
+(untied) — no round-trip at all: self-ranks in the tens of thousands, top-1s are junk-looking
+code/rare tokens (`ĠserviceProvider`, `ĠoutFile`), not obviously bigram continuations.

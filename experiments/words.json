@@ -1,0 +1,341 @@
+{
+  "_readme": "Word/token list for the embed->unembed round-trip experiment. Strings are tokenized fresh per model with add_special_tokens=False. NO holdout: everything here is in the analysis, including weird/glitch/control tokens (user clarification 2026-07-05). BOS/EOS/PAD/UNK special tokens are added per model by the runner from each tokenizer's config.",
+  "words": [
+    {
+      "text": "dog",
+      "category": "common_noun"
+    },
+    {
+      "text": "table",
+      "category": "common_noun"
+    },
+    {
+      "text": "water",
+      "category": "common_noun"
+    },
+    {
+      "text": "music",
+      "category": "common_noun"
+    },
+    {
+      "text": "idea",
+      "category": "common_noun"
+    },
+    {
+      "text": "house",
+      "category": "common_noun"
+    },
+    {
+      "text": "science",
+      "category": "common_noun"
+    },
+    {
+      "text": "coffee",
+      "category": "common_noun"
+    },
+    {
+      "text": "London",
+      "category": "proper_noun"
+    },
+    {
+      "text": "Einstein",
+      "category": "proper_noun"
+    },
+    {
+      "text": "Google",
+      "category": "proper_noun"
+    },
+    {
+      "text": "Tokyo",
+      "category": "proper_noun"
+    },
+    {
+      "text": "Shakespeare",
+      "category": "proper_noun"
+    },
+    {
+      "text": "Beyoncé",
+      "category": "proper_noun"
+    },
+    {
+      "text": "run",
+      "category": "verb"
+    },
+    {
+      "text": "walked",
+      "category": "verb"
+    },
+    {
+      "text": "is",
+      "category": "verb"
+    },
+    {
+      "text": "think",
+      "category": "verb"
+    },
+    {
+      "text": "understand",
+      "category": "verb"
+    },
+    {
+      "text": "procrastinate",
+      "category": "verb"
+    },
+    {
+      "text": "of",
+      "category": "preposition"
+    },
+    {
+      "text": "in",
+      "category": "preposition"
+    },
+    {
+      "text": "under",
+      "category": "preposition"
+    },
+    {
+      "text": "between",
+      "category": "preposition"
+    },
+    {
+      "text": "through",
+      "category": "preposition"
+    },
+    {
+      "text": "despite",
+      "category": "preposition"
+    },
+    {
+      "text": "big",
+      "category": "adjective"
+    },
+    {
+      "text": "happy",
+      "category": "adjective"
+    },
+    {
+      "text": "enormous",
+      "category": "adjective"
+    },
+    {
+      "text": "purple",
+      "category": "adjective"
+    },
+    {
+      "text": "incomprehensible",
+      "category": "adjective"
+    },
+    {
+      "text": "quickly",
+      "category": "adverb"
+    },
+    {
+      "text": "very",
+      "category": "adverb"
+    },
+    {
+      "text": "often",
+      "category": "adverb"
+    },
+    {
+      "text": "she",
+      "category": "pronoun"
+    },
+    {
+      "text": "they",
+      "category": "pronoun"
+    },
+    {
+      "text": "ourselves",
+      "category": "pronoun"
+    },
+    {
+      "text": "the",
+      "category": "determiner"
+    },
+    {
+      "text": "an",
+      "category": "determiner"
+    },
+    {
+      "text": "this",
+      "category": "determiner"
+    },
+    {
+      "text": "and",
+      "category": "conjunction"
+    },
+    {
+      "text": "but",
+      "category": "conjunction"
+    },
+    {
+      "text": "although",
+      "category": "conjunction"
+    },
+    {
+      "text": "hello",
+      "category": "interjection"
+    },
+    {
+      "text": "wow",
+      "category": "interjection"
+    },
+    {
+      "text": "hmm",
+      "category": "interjection"
+    },
+    {
+      "text": "seven",
+      "category": "number"
+    },
+    {
+      "text": "42",
+      "category": "number"
+    },
+    {
+      "text": "3.14",
+      "category": "number"
+    },
+    {
+      "text": "serendipity",
+      "category": "multi_token_by_design"
+    },
+    {
+      "text": "antidisestablishmentarianism",
+      "category": "multi_token_by_design"
+    },
+    {
+      "text": "cryptocurrency",
+      "category": "multi_token_by_design"
+    },
+    {
+      "text": "unbelievable",
+      "category": "multi_token_by_design"
+    },
+    {
+      "text": "biotechnology",
+      "category": "multi_token_by_design"
+    },
+    {
+      "text": ".",
+      "category": "punctuation"
+    },
+    {
+      "text": ",",
+      "category": "punctuation"
+    },
+    {
+      "text": "!",
+      "category": "punctuation"
+    },
+    {
+      "text": "?",
+      "category": "punctuation"
+    },
+    {
+      "text": ";",
+      "category": "punctuation"
+    },
+    {
+      "text": ":",
+      "category": "punctuation"
+    },
+    {
+      "text": "'",
+      "category": "punctuation"
+    },
+    {
+      "text": "\"",
+      "category": "punctuation"
+    },
+    {
+      "text": "(",
+      "category": "punctuation"
+    },
+    {
+      "text": ")",
+      "category": "punctuation"
+    },
+    {
+      "text": "—",
+      "category": "punctuation"
+    },
+    {
+      "text": "…",
+      "category": "punctuation"
+    },
+    {
+      "text": "@",
+      "category": "symbol"
+    },
+    {
+      "text": "#",
+      "category": "symbol"
+    },
+    {
+      "text": "$",
+      "category": "symbol"
+    },
+    {
+      "text": "%",
+      "category": "symbol"
+    },
+    {
+      "text": "~",
+      "category": "symbol"
+    },
+    {
+      "text": " ",
+      "category": "whitespace"
+    },
+    {
+      "text": "\n",
+      "category": "whitespace"
+    },
+    {
+      "text": "\t",
+      "category": "whitespace"
+    },
+    {
+      "text": "'s",
+      "category": "subword_fragment"
+    },
+    {
+      "text": "n't",
+      "category": "subword_fragment"
+    },
+    {
+      "text": "ing",
+      "category": "subword_fragment"
+    },
+    {
+      "text": "pre",
+      "category": "subword_fragment"
+    },
+    {
+      "text": " SolidGoldMagikarp",
+      "category": "glitch_token"
+    },
+    {
+      "text": " petertodd",
+      "category": "glitch_token"
+    },
+    {
+      "text": "\u0000",
+      "category": "control_byte"
+    },
+    {
+      "text": "<|reserved_special_token_0|>",
+      "category": "reserved_special"
+    },
+    {
+      "text": "<|extra_0|>",
+      "category": "reserved_special"
+    },
+    {
+      "text": "<unk>",
+      "category": "unk_token"
+    }
+  ]
+}
