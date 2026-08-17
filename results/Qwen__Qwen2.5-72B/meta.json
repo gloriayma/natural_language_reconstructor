@@ -1,0 +1,51 @@
+{
+  "model": "Qwen/Qwen2.5-72B",
+  "script_version": 3,
+  "dtype": "bfloat16",
+  "vocab_size_config": 152064,
+  "vocab_size_tokenizer": 151665,
+  "hidden_size": 8192,
+  "n_layers": 80,
+  "probe_layers": [
+    1,
+    2,
+    9,
+    18,
+    27,
+    36,
+    44,
+    53,
+    62,
+    71,
+    73,
+    75,
+    77,
+    79,
+    80
+  ],
+  "layers_attr": "layers",
+  "tie_word_embeddings_config": false,
+  "tied_weights_actual_same_tensor": false,
+  "final_norm_attr": "norm",
+  "final_norm_class": "Qwen2RMSNorm",
+  "lm_head_has_bias": false,
+  "special_tokens": {
+    "bos": [
+      null,
+      null
+    ],
+    "eos": [
+      "<|endoftext|>",
+      151643
+    ],
+    "pad": [
+      "<|endoftext|>",
+      151643
+    ],
+    "unk": [
+      null,
+      null
+    ]
+  },
+  "torch_version": "2.12.1+cu130"
+}

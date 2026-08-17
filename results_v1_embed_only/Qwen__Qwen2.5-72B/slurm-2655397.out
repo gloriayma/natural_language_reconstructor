@@ -1,0 +1,8 @@
+/var/spool/slurmd/job2655397/slurm_script: 5: source: not found
+
+CondaError: Run 'conda init' before 'conda activate'
+
+Traceback (most recent call last):
+  File [35m"/home/gloriama/dev/activation_balls/experiments/roundtrip.py"[0m, line [35m32[0m, in [35m<module>[0m
+    import numpy as np
+[1;35mModuleNotFoundError[0m: [35mNo module named 'numpy'[0m

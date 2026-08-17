@@ -1,0 +1,48 @@
+{
+  "model": "gpt2",
+  "script_version": 3,
+  "dtype": "float32",
+  "vocab_size_config": 50257,
+  "vocab_size_tokenizer": 50257,
+  "hidden_size": 768,
+  "n_layers": 12,
+  "probe_layers": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12
+  ],
+  "layers_attr": "h",
+  "tie_word_embeddings_config": true,
+  "tied_weights_actual_same_tensor": true,
+  "final_norm_attr": "ln_f",
+  "final_norm_class": "LayerNorm",
+  "lm_head_has_bias": false,
+  "special_tokens": {
+    "bos": [
+      "<|endoftext|>",
+      50256
+    ],
+    "eos": [
+      "<|endoftext|>",
+      50256
+    ],
+    "pad": [
+      null,
+      null
+    ],
+    "unk": [
+      "<|endoftext|>",
+      50256
+    ]
+  },
+  "torch_version": "2.12.1+cu130"
+}

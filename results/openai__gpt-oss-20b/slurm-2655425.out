@@ -1,0 +1,96 @@
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+/home/gloriama/miniconda/envs/interp/lib/python3.11/site-packages/torch/cuda/__init__.py:187: UserWarning: CUDA initialization: The NVIDIA driver on your system is too old (found version 12060). Please update your GPU driver by downloading and installing a new version from the URL: http://www.nvidia.com/Download/index.aspx Alternatively, go to: https://pytorch.org to install a PyTorch version that has been compiled with your version of the CUDA driver. (Triggered internally at /pytorch/c10/cuda/CUDAFunctions.cpp:119.)
+  return torch._C._cuda_getDeviceCount() > 0
+[transformers] MXFP4 quantization is only supported on GPUs with compute capability >= 7.5 (e.g T4, A100, L4, H100, or B200) or XPUs (e.g Intel® Data Center GPU Max Series). We will default to dequantizing the model to bf16.
+Fetching 3 files:   0%|          | 0/3 [00:00<?, ?it/s]Fetching 3 files:  33%|███▎      | 1/3 [00:16<00:33, 16.62s/it]Fetching 3 files:  67%|██████▋   | 2/3 [00:18<00:07,  7.98s/it]Fetching 3 files: 100%|██████████| 3/3 [00:18<00:00,  6.18s/it]
+Loading weights:   0%|          | 0/411 [00:00<?, ?it/s]Loading weights:   1%|          | 5/411 [00:01<01:42,  3.95it/s]Loading weights:   2%|▏         | 7/411 [00:02<03:11,  2.11it/s]Loading weights:   5%|▌         | 22/411 [00:03<00:54,  7.12it/s]Loading weights:   6%|▌         | 24/411 [00:05<01:31,  4.22it/s]Loading weights:   9%|▉         | 39/411 [00:06<00:48,  7.71it/s]Loading weights:  10%|▉         | 41/411 [00:08<01:14,  4.99it/s]Loading weights:  14%|█▎        | 56/411 [00:08<00:43,  8.07it/s]Loading weights:  14%|█▍        | 58/411 [00:10<01:06,  5.30it/s]Loading weights:  18%|█▊        | 73/411 [00:11<00:42,  8.05it/s]Loading weights:  18%|█▊        | 75/411 [00:13<01:02,  5.39it/s]Loading weights:  22%|██▏       | 90/411 [00:13<00:39,  8.19it/s]Loading weights:  22%|██▏       | 92/411 [00:15<00:57,  5.55it/s]Loading weights:  26%|██▌       | 107/411 [00:16<00:36,  8.34it/s]Loading weights:  27%|██▋       | 109/411 [00:17<00:53,  5.62it/s]Loading weights:  30%|███       | 124/411 [00:18<00:34,  8.37it/s]Loading weights:  31%|███       | 126/411 [00:20<00:50,  5.64it/s]Loading weights:  34%|███▍      | 141/411 [00:21<00:32,  8.28it/s]Loading weights:  35%|███▍      | 143/411 [00:22<00:48,  5.58it/s]Loading weights:  38%|███▊      | 158/411 [00:23<00:30,  8.36it/s]Loading weights:  39%|███▉      | 160/411 [00:25<00:44,  5.63it/s]Loading weights:  43%|████▎     | 175/411 [00:26<00:28,  8.37it/s]Loading weights:  43%|████▎     | 177/411 [00:27<00:40,  5.73it/s]Loading weights:  47%|████▋     | 192/411 [00:28<00:25,  8.45it/s]Loading weights:  47%|████▋     | 194/411 [00:30<00:37,  5.73it/s]Loading weights:  51%|█████     | 209/411 [00:30<00:24,  8.35it/s]Loading weights:  51%|█████▏    | 211/411 [00:32<00:35,  5.62it/s]Loading weights:  55%|█████▍    | 226/411 [00:33<00:22,  8.38it/s]Loading weights:  55%|█████▌    | 228/411 [00:35<00:32,  5.64it/s]Loading weights:  59%|█████▉    | 243/411 [00:35<00:19,  8.42it/s]Loading weights:  60%|█████▉    | 245/411 [00:37<00:29,  5.72it/s]Loading weights:  63%|██████▎   | 260/411 [00:38<00:17,  8.43it/s]Loading weights:  64%|██████▎   | 262/411 [00:40<00:26,  5.59it/s]Loading weights:  67%|██████▋   | 277/411 [00:40<00:16,  8.29it/s]Loading weights:  68%|██████▊   | 279/411 [00:42<00:23,  5.64it/s]Loading weights:  72%|███████▏  | 294/411 [00:43<00:13,  8.36it/s]Loading weights:  72%|███████▏  | 296/411 [00:44<00:20,  5.61it/s]Loading weights:  76%|███████▌  | 311/411 [00:45<00:12,  8.31it/s]Loading weights:  76%|███████▌  | 313/411 [00:47<00:17,  5.61it/s]Loading weights:  80%|███████▉  | 328/411 [00:48<00:09,  8.36it/s]Loading weights:  80%|████████  | 330/411 [00:49<00:14,  5.60it/s]Loading weights:  84%|████████▍ | 345/411 [00:50<00:08,  8.15it/s]Loading weights:  84%|████████▍ | 347/411 [00:52<00:11,  5.54it/s]Loading weights:  88%|████████▊ | 362/411 [00:53<00:05,  8.30it/s]Loading weights:  89%|████████▊ | 364/411 [00:54<00:08,  5.57it/s]Loading weights:  92%|█████████▏| 379/411 [00:55<00:03,  8.32it/s]Loading weights:  93%|█████████▎| 381/411 [00:57<00:05,  5.67it/s]Loading weights:  96%|█████████▋| 396/411 [00:58<00:01,  8.31it/s]Loading weights:  97%|█████████▋| 398/411 [00:59<00:02,  5.57it/s]Loading weights: 100%|██████████| 411/411 [00:59<00:00,  6.87it/s]
+done: common_noun            'dog' -> 1 token(s)
+done: common_noun            'table' -> 1 token(s)
+done: common_noun            'water' -> 1 token(s)
+done: common_noun            'music' -> 1 token(s)
+done: common_noun            'idea' -> 1 token(s)
+done: common_noun            'house' -> 1 token(s)
+done: common_noun            'science' -> 1 token(s)
+done: common_noun            'coffee' -> 1 token(s)
+done: proper_noun            'London' -> 1 token(s)
+done: proper_noun            'Einstein' -> 2 token(s)
+done: proper_noun            'Google' -> 1 token(s)
+done: proper_noun            'Tokyo' -> 1 token(s)
+done: proper_noun            'Shakespeare' -> 2 token(s)
+done: proper_noun            'Beyoncé' -> 3 token(s)
+done: verb                   'run' -> 1 token(s)
+done: verb                   'walked' -> 2 token(s)
+done: verb                   'is' -> 1 token(s)
+done: verb                   'think' -> 1 token(s)
+done: verb                   'understand' -> 2 token(s)
+done: verb                   'procrastinate' -> 3 token(s)
+done: preposition            'of' -> 1 token(s)
+done: preposition            'in' -> 1 token(s)
+done: preposition            'under' -> 1 token(s)
+done: preposition            'between' -> 1 token(s)
+done: preposition            'through' -> 1 token(s)
+done: preposition            'despite' -> 2 token(s)
+done: adjective              'big' -> 1 token(s)
+done: adjective              'happy' -> 1 token(s)
+done: adjective              'enormous' -> 3 token(s)
+done: adjective              'purple' -> 1 token(s)
+done: adjective              'incomprehensible' -> 4 token(s)
+done: adverb                 'quickly' -> 2 token(s)
+done: adverb                 'very' -> 1 token(s)
+done: adverb                 'often' -> 1 token(s)
+done: pronoun                'she' -> 1 token(s)
+done: pronoun                'they' -> 1 token(s)
+done: pronoun                'ourselves' -> 2 token(s)
+done: determiner             'the' -> 1 token(s)
+done: determiner             'an' -> 1 token(s)
+done: determiner             'this' -> 1 token(s)
+done: conjunction            'and' -> 1 token(s)
+done: conjunction            'but' -> 1 token(s)
+done: conjunction            'although' -> 1 token(s)
+done: interjection           'hello' -> 1 token(s)
+done: interjection           'wow' -> 1 token(s)
+done: interjection           'hmm' -> 2 token(s)
+done: number                 'seven' -> 1 token(s)
+done: number                 '42' -> 1 token(s)
+done: number                 '3.14' -> 3 token(s)
+done: multi_token_by_design  'serendipity' -> 4 token(s)
+done: multi_token_by_design  'antidisestablishmentarianism' -> 6 token(s)
+done: multi_token_by_design  'cryptocurrency' -> 2 token(s)
+done: multi_token_by_design  'unbelievable' -> 3 token(s)
+done: multi_token_by_design  'biotechnology' -> 2 token(s)
+done: punctuation            '.' -> 1 token(s)
+done: punctuation            ',' -> 1 token(s)
+done: punctuation            '!' -> 1 token(s)
+done: punctuation            '?' -> 1 token(s)
+done: punctuation            ';' -> 1 token(s)
+done: punctuation            ':' -> 1 token(s)
+done: punctuation            "'" -> 1 token(s)
+done: punctuation            '"' -> 1 token(s)
+done: punctuation            '(' -> 1 token(s)
+done: punctuation            ')' -> 1 token(s)
+done: punctuation            '—' -> 1 token(s)
+done: punctuation            '…' -> 1 token(s)
+done: symbol                 '@' -> 1 token(s)
+done: symbol                 '#' -> 1 token(s)
+done: symbol                 '$' -> 1 token(s)
+done: symbol                 '%' -> 1 token(s)
+done: symbol                 '~' -> 1 token(s)
+done: whitespace             ' ' -> 1 token(s)
+done: whitespace             '\n' -> 1 token(s)
+done: whitespace             '\t' -> 1 token(s)
+done: subword_fragment       "'s" -> 1 token(s)
+done: subword_fragment       "n't" -> 1 token(s)
+done: subword_fragment       'ing' -> 1 token(s)
+done: subword_fragment       'pre' -> 1 token(s)
+done: glitch_token           ' SolidGoldMagikarp' -> 5 token(s)
+done: glitch_token           ' petertodd' -> 3 token(s)
+done: control_byte           '\x00' -> 1 token(s)
+done: reserved_special       '<|reserved_special_token_0|>' -> 9 token(s)
+done: reserved_special       '<|extra_0|>' -> 7 token(s)
+done: unk_token              '<unk>' -> 3 token(s)
+done: special_bos            '<|startoftext|>' -> 1 token(s)
+done: special_eos            '<|return|>' -> 1 token(s)
+done: special_pad            '<|endoftext|>' -> 1 token(s)
+
+wrote 140 rows (140 token rows) x 16 probes to /home/gloriama/dev/activation_balls/results/openai__gpt-oss-20b
+tied(config)=False tied(actual)=False norm=norm n_layers=24 probes=[1, 2, 3, 5, 8, 11, 13, 15, 16, 17, 19, 21, 23, 24]

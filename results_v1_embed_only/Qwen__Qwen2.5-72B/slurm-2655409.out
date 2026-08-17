@@ -1,0 +1,93 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Fetching 37 files:   0%|          | 0/37 [00:00<?, ?it/s]Fetching 37 files:   3%|▎         | 1/37 [02:42<1:37:27, 162.43s/it]Fetching 37 files:   5%|▌         | 2/37 [02:44<39:52, 68.35s/it]   Fetching 37 files:   8%|▊         | 3/37 [04:07<42:28, 74.96s/it]Fetching 37 files:  11%|█         | 4/37 [07:13<1:05:16, 118.67s/it]Fetching 37 files:  24%|██▍       | 9/37 [07:22<15:05, 32.35s/it]   Fetching 37 files:  27%|██▋       | 10/37 [07:23<12:05, 26.87s/it]Fetching 37 files:  30%|██▉       | 11/37 [08:02<12:43, 29.36s/it]Fetching 37 files:  43%|████▎     | 16/37 [08:04<04:20, 12.42s/it]Fetching 37 files:  46%|████▌     | 17/37 [09:51<08:39, 25.99s/it]Fetching 37 files:  62%|██████▏   | 23/37 [09:54<02:46, 11.93s/it]Fetching 37 files:  65%|██████▍   | 24/37 [10:02<02:28, 11.43s/it]Fetching 37 files:  68%|██████▊   | 25/37 [11:44<04:50, 24.24s/it]Fetching 37 files:  70%|███████   | 26/37 [14:55<09:36, 52.42s/it]Fetching 37 files:  95%|█████████▍| 35/37 [14:56<00:33, 16.63s/it]Fetching 37 files:  97%|█████████▋| 36/37 [14:56<00:15, 15.03s/it]Fetching 37 files: 100%|██████████| 37/37 [14:56<00:00, 24.24s/it]
+Loading weights:   0%|          | 0/963 [00:00<?, ?it/s]Loading weights:   5%|▌         | 49/963 [00:00<00:02, 367.57it/s]Loading weights:   9%|▉         | 86/963 [00:00<00:05, 163.01it/s]Loading weights:  11%|█         | 108/963 [00:00<00:05, 157.40it/s]Loading weights:  13%|█▎        | 127/963 [00:00<00:06, 128.85it/s]Loading weights:  15%|█▍        | 142/963 [00:00<00:06, 124.08it/s]Loading weights:  16%|█▌        | 156/963 [00:01<00:06, 116.39it/s]Loading weights:  18%|█▊        | 169/963 [00:01<00:06, 116.92it/s]Loading weights:  19%|█▉        | 182/963 [00:01<00:06, 113.56it/s]Loading weights:  20%|██        | 194/963 [00:01<00:07, 105.49it/s]Loading weights:  21%|██▏       | 207/963 [00:01<00:07, 104.80it/s]Loading weights:  23%|██▎       | 222/963 [00:01<00:06, 112.40it/s]Loading weights:  25%|██▍       | 237/963 [00:01<00:06, 110.47it/s]Loading weights:  26%|██▌       | 251/963 [00:01<00:06, 116.14it/s]Loading weights:  27%|██▋       | 263/963 [00:02<00:06, 116.24it/s]Loading weights:  29%|██▉       | 277/963 [00:02<00:05, 120.87it/s]Loading weights:  31%|███       | 294/963 [00:02<00:05, 127.39it/s]Loading weights:  32%|███▏      | 307/963 [00:02<00:05, 120.72it/s]Loading weights:  33%|███▎      | 320/963 [00:02<00:05, 122.34it/s]Loading weights:  35%|███▍      | 333/963 [00:02<00:05, 106.07it/s]Loading weights:  36%|███▌      | 348/963 [00:02<00:05, 116.33it/s]Loading weights:  38%|███▊      | 364/963 [00:02<00:05, 115.43it/s]Loading weights:  39%|███▉      | 380/963 [00:03<00:05, 116.37it/s]Loading weights:  41%|████▏     | 398/963 [00:03<00:04, 124.41it/s]Loading weights:  43%|████▎     | 411/963 [00:03<00:04, 114.76it/s]Loading weights:  45%|████▍     | 430/963 [00:03<00:04, 118.05it/s]Loading weights:  46%|████▌     | 443/963 [00:03<00:04, 112.30it/s]Loading weights:  48%|████▊     | 466/963 [00:03<00:04, 123.75it/s]Loading weights:  50%|█████     | 486/963 [00:03<00:03, 135.94it/s]Loading weights:  52%|█████▏    | 500/963 [00:04<00:03, 128.24it/s]Loading weights:  53%|█████▎    | 514/963 [00:04<00:03, 118.06it/s]Loading weights:  55%|█████▍    | 526/963 [00:04<00:03, 111.80it/s]Loading weights:  57%|█████▋    | 546/963 [00:04<00:03, 131.77it/s]Loading weights:  58%|█████▊    | 560/963 [00:04<00:03, 117.71it/s]Loading weights:  60%|█████▉    | 573/963 [00:04<00:04, 91.53it/s] Loading weights:  62%|██████▏   | 598/963 [00:04<00:03, 110.45it/s]Loading weights:  64%|██████▍   | 617/963 [00:05<00:02, 123.24it/s]Loading weights:  66%|██████▌   | 631/963 [00:05<00:02, 110.84it/s]Loading weights:  67%|██████▋   | 649/963 [00:05<00:02, 120.61it/s]Loading weights:  69%|██████▉   | 664/963 [00:05<00:02, 124.30it/s]Loading weights:  70%|███████   | 677/963 [00:05<00:02, 104.64it/s]Loading weights:  73%|███████▎  | 702/963 [00:05<00:01, 136.25it/s]Loading weights:  75%|███████▍  | 718/963 [00:05<00:01, 137.26it/s]Loading weights:  76%|███████▌  | 733/963 [00:06<00:02, 111.18it/s]Loading weights:  78%|███████▊  | 750/963 [00:06<00:01, 121.43it/s]Loading weights:  80%|███████▉  | 769/963 [00:06<00:01, 119.73it/s]Loading weights:  82%|████████▏ | 786/963 [00:06<00:01, 129.40it/s]Loading weights:  83%|████████▎ | 800/963 [00:06<00:01, 128.86it/s]Loading weights:  85%|████████▍ | 814/963 [00:06<00:01, 116.75it/s]Loading weights:  87%|████████▋ | 833/963 [00:06<00:01, 112.32it/s]Loading weights:  89%|████████▉ | 855/963 [00:07<00:00, 131.64it/s]Loading weights:  90%|█████████ | 869/963 [00:07<00:00, 130.09it/s]Loading weights:  92%|█████████▏| 884/963 [00:07<00:00, 133.72it/s]Loading weights:  93%|█████████▎| 898/963 [00:07<00:00, 120.12it/s]Loading weights:  95%|█████████▌| 915/963 [00:07<00:00, 123.42it/s]Loading weights:  96%|█████████▋| 928/963 [00:07<00:00, 120.54it/s]Loading weights:  98%|█████████▊| 941/963 [00:07<00:00, 116.00it/s]Loading weights: 100%|██████████| 963/963 [00:07<00:00, 123.05it/s]
+done: common_noun            'dog' -> 1 token(s)
+done: common_noun            'table' -> 1 token(s)
+done: common_noun            'water' -> 1 token(s)
+done: common_noun            'music' -> 1 token(s)
+done: common_noun            'idea' -> 1 token(s)
+done: common_noun            'house' -> 1 token(s)
+done: common_noun            'science' -> 1 token(s)
+done: common_noun            'coffee' -> 1 token(s)
+done: proper_noun            'London' -> 1 token(s)
+done: proper_noun            'Einstein' -> 2 token(s)
+done: proper_noun            'Google' -> 1 token(s)
+done: proper_noun            'Tokyo' -> 2 token(s)
+done: proper_noun            'Shakespeare' -> 2 token(s)
+done: proper_noun            'Beyoncé' -> 3 token(s)
+done: verb                   'run' -> 1 token(s)
+done: verb                   'walked' -> 2 token(s)
+done: verb                   'is' -> 1 token(s)
+done: verb                   'think' -> 1 token(s)
+done: verb                   'understand' -> 2 token(s)
+done: verb                   'procrastinate' -> 3 token(s)
+done: preposition            'of' -> 1 token(s)
+done: preposition            'in' -> 1 token(s)
+done: preposition            'under' -> 1 token(s)
+done: preposition            'between' -> 1 token(s)
+done: preposition            'through' -> 1 token(s)
+done: preposition            'despite' -> 2 token(s)
+done: adjective              'big' -> 1 token(s)
+done: adjective              'happy' -> 1 token(s)
+done: adjective              'enormous' -> 3 token(s)
+done: adjective              'purple' -> 1 token(s)
+done: adjective              'incomprehensible' -> 4 token(s)
+done: adverb                 'quickly' -> 2 token(s)
+done: adverb                 'very' -> 1 token(s)
+done: adverb                 'often' -> 1 token(s)
+done: pronoun                'she' -> 1 token(s)
+done: pronoun                'they' -> 1 token(s)
+done: pronoun                'ourselves' -> 2 token(s)
+done: determiner             'the' -> 1 token(s)
+done: determiner             'an' -> 1 token(s)
+done: determiner             'this' -> 1 token(s)
+done: conjunction            'and' -> 1 token(s)
+done: conjunction            'but' -> 1 token(s)
+done: conjunction            'although' -> 1 token(s)
+done: interjection           'hello' -> 1 token(s)
+done: interjection           'wow' -> 1 token(s)
+done: interjection           'hmm' -> 2 token(s)
+done: number                 'seven' -> 1 token(s)
+done: number                 '42' -> 2 token(s)
+done: number                 '3.14' -> 4 token(s)
+done: multi_token_by_design  'serendipity' -> 4 token(s)
+done: multi_token_by_design  'antidisestablishmentarianism' -> 6 token(s)
+done: multi_token_by_design  'cryptocurrency' -> 2 token(s)
+done: multi_token_by_design  'unbelievable' -> 3 token(s)
+done: multi_token_by_design  'biotechnology' -> 2 token(s)
+done: punctuation            '.' -> 1 token(s)
+done: punctuation            ',' -> 1 token(s)
+done: punctuation            '!' -> 1 token(s)
+done: punctuation            '?' -> 1 token(s)
+done: punctuation            ';' -> 1 token(s)
+done: punctuation            ':' -> 1 token(s)
+done: punctuation            "'" -> 1 token(s)
+done: punctuation            '"' -> 1 token(s)
+done: punctuation            '(' -> 1 token(s)
+done: punctuation            ')' -> 1 token(s)
+done: punctuation            '—' -> 1 token(s)
+done: punctuation            '…' -> 1 token(s)
+done: symbol                 '@' -> 1 token(s)
+done: symbol                 '#' -> 1 token(s)
+done: symbol                 '$' -> 1 token(s)
+done: symbol                 '%' -> 1 token(s)
+done: symbol                 '~' -> 1 token(s)
+done: whitespace             ' ' -> 1 token(s)
+done: whitespace             '\n' -> 1 token(s)
+done: whitespace             '\t' -> 1 token(s)
+done: subword_fragment       "'s" -> 1 token(s)
+done: subword_fragment       "n't" -> 2 token(s)
+done: subword_fragment       'ing' -> 1 token(s)
+done: subword_fragment       'pre' -> 1 token(s)
+done: glitch_token           ' SolidGoldMagikarp' -> 5 token(s)
+done: glitch_token           ' petertodd' -> 3 token(s)
+done: control_byte           '\x00' -> 1 token(s)
+done: reserved_special       '<|reserved_special_token_0|>' -> 9 token(s)
+done: reserved_special       '<|extra_0|>' -> 7 token(s)
+done: unk_token              '<unk>' -> 2 token(s)
+done: special_eos            '<|endoftext|>' -> 1 token(s)
+done: special_pad            '<|endoftext|>' -> 1 token(s)
+
+wrote 142 rows (142 token rows) to /home/gloriama/dev/activation_balls/results/Qwen__Qwen2.5-72B
+tied(config)=False tied(actual)=False norm=norm

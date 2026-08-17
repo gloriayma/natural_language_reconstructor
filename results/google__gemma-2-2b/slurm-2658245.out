@@ -1,0 +1,94 @@
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Fetching 3 files:   0%|          | 0/3 [00:00<?, ?it/s]Fetching 3 files:  33%|███▎      | 1/3 [00:13<00:26, 13.07s/it]Fetching 3 files: 100%|██████████| 3/3 [00:13<00:00,  4.36s/it]
+Loading weights:   0%|          | 0/288 [00:00<?, ?it/s]Loading weights:  15%|█▍        | 43/288 [00:00<00:00, 419.71it/s]Loading weights:  30%|██▉       | 85/288 [00:00<00:00, 226.31it/s]Loading weights:  39%|███▉      | 113/288 [00:00<00:00, 190.30it/s]Loading weights:  47%|████▋     | 135/288 [00:00<00:00, 191.22it/s]Loading weights:  54%|█████▍    | 156/288 [00:00<00:00, 180.29it/s]Loading weights:  61%|██████    | 175/288 [00:00<00:00, 177.19it/s]Loading weights:  67%|██████▋   | 194/288 [00:01<00:00, 171.16it/s]Loading weights:  74%|███████▎  | 212/288 [00:01<00:00, 154.05it/s]Loading weights:  79%|███████▉  | 228/288 [00:01<00:00, 149.37it/s]Loading weights:  85%|████████▍ | 244/288 [00:01<00:00, 148.92it/s]Loading weights:  94%|█████████▍| 272/288 [00:01<00:00, 182.59it/s]Loading weights: 100%|██████████| 288/288 [00:01<00:00, 192.03it/s]
+done: common_noun            'dog' -> 1 token(s)
+done: common_noun            'table' -> 1 token(s)
+done: common_noun            'water' -> 1 token(s)
+done: common_noun            'music' -> 1 token(s)
+done: common_noun            'idea' -> 1 token(s)
+done: common_noun            'house' -> 1 token(s)
+done: common_noun            'science' -> 1 token(s)
+done: common_noun            'coffee' -> 1 token(s)
+done: proper_noun            'London' -> 1 token(s)
+done: proper_noun            'Einstein' -> 1 token(s)
+done: proper_noun            'Google' -> 1 token(s)
+done: proper_noun            'Tokyo' -> 1 token(s)
+done: proper_noun            'Shakespeare' -> 1 token(s)
+done: proper_noun            'Beyoncé' -> 2 token(s)
+done: verb                   'run' -> 1 token(s)
+done: verb                   'walked' -> 2 token(s)
+done: verb                   'is' -> 1 token(s)
+done: verb                   'think' -> 1 token(s)
+done: verb                   'understand' -> 1 token(s)
+done: verb                   'procrastinate' -> 4 token(s)
+done: preposition            'of' -> 1 token(s)
+done: preposition            'in' -> 1 token(s)
+done: preposition            'under' -> 1 token(s)
+done: preposition            'between' -> 1 token(s)
+done: preposition            'through' -> 1 token(s)
+done: preposition            'despite' -> 1 token(s)
+done: adjective              'big' -> 1 token(s)
+done: adjective              'happy' -> 1 token(s)
+done: adjective              'enormous' -> 2 token(s)
+done: adjective              'purple' -> 1 token(s)
+done: adjective              'incomprehensible' -> 3 token(s)
+done: adverb                 'quickly' -> 1 token(s)
+done: adverb                 'very' -> 1 token(s)
+done: adverb                 'often' -> 1 token(s)
+done: pronoun                'she' -> 1 token(s)
+done: pronoun                'they' -> 1 token(s)
+done: pronoun                'ourselves' -> 2 token(s)
+done: determiner             'the' -> 1 token(s)
+done: determiner             'an' -> 1 token(s)
+done: determiner             'this' -> 1 token(s)
+done: conjunction            'and' -> 1 token(s)
+done: conjunction            'but' -> 1 token(s)
+done: conjunction            'although' -> 1 token(s)
+done: interjection           'hello' -> 1 token(s)
+done: interjection           'wow' -> 1 token(s)
+done: interjection           'hmm' -> 1 token(s)
+done: number                 'seven' -> 1 token(s)
+done: number                 '42' -> 2 token(s)
+done: number                 '3.14' -> 4 token(s)
+done: multi_token_by_design  'serendipity' -> 2 token(s)
+done: multi_token_by_design  'antidisestablishmentarianism' -> 5 token(s)
+done: multi_token_by_design  'cryptocurrency' -> 2 token(s)
+done: multi_token_by_design  'unbelievable' -> 2 token(s)
+done: multi_token_by_design  'biotechnology' -> 2 token(s)
+done: punctuation            '.' -> 1 token(s)
+done: punctuation            ',' -> 1 token(s)
+done: punctuation            '!' -> 1 token(s)
+done: punctuation            '?' -> 1 token(s)
+done: punctuation            ';' -> 1 token(s)
+done: punctuation            ':' -> 1 token(s)
+done: punctuation            "'" -> 1 token(s)
+done: punctuation            '"' -> 1 token(s)
+done: punctuation            '(' -> 1 token(s)
+done: punctuation            ')' -> 1 token(s)
+done: punctuation            '—' -> 1 token(s)
+done: punctuation            '…' -> 1 token(s)
+done: symbol                 '@' -> 1 token(s)
+done: symbol                 '#' -> 1 token(s)
+done: symbol                 '$' -> 1 token(s)
+done: symbol                 '%' -> 1 token(s)
+done: symbol                 '~' -> 1 token(s)
+done: whitespace             ' ' -> 1 token(s)
+done: whitespace             '\n' -> 1 token(s)
+done: whitespace             '\t' -> 1 token(s)
+done: subword_fragment       "'s" -> 2 token(s)
+done: subword_fragment       "n't" -> 3 token(s)
+done: subword_fragment       'ing' -> 1 token(s)
+done: subword_fragment       'pre' -> 1 token(s)
+done: glitch_token           ' SolidGoldMagikarp' -> 5 token(s)
+done: glitch_token           ' petertodd' -> 2 token(s)
+done: control_byte           '\x00' -> 1 token(s)
+done: reserved_special       '<|reserved_special_token_0|>' -> 10 token(s)
+done: reserved_special       '<|extra_0|>' -> 6 token(s)
+done: unk_token              '<unk>' -> 1 token(s)
+done: special_bos            '<bos>' -> 1 token(s)
+done: special_eos            '<eos>' -> 1 token(s)
+done: special_pad            '<pad>' -> 1 token(s)
+done: special_unk            '<unk>' -> 1 token(s)
+
+wrote 131 rows (131 token rows) x 16 probes to /home/gloriama/dev/activation_balls/results/google__gemma-2-2b
+tied(config)=True tied(actual)=True norm=norm n_layers=26 probes=[1, 2, 3, 6, 9, 12, 14, 17, 19, 20, 21, 23, 25, 26]
